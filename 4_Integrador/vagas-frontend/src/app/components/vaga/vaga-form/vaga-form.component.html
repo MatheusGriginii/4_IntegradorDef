@@ -1,0 +1,158 @@
+﻿<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-briefcase me-2"></i>
+            {{ isEdicao ? 'Editar Vaga' : 'Nova Vaga' }}
+          </h5>
+        </div>
+        
+        <div class="card-body">
+          <form #vagaForm="ngForm" (ngSubmit)="salvar()">
+            <div class="row">
+              <div class="col-md-6">
+                <label class="form-label">Título *</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  [(ngModel)]="vaga.titulo"
+                  name="titulo"
+                  required
+                  placeholder="Digite o título da vaga">
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label">Empresa *</label>
+                <select 
+                  class="form-select" 
+                  [ngModel]="vaga.empresa?.id"
+                  (ngModelChange)="onEmpresaChange($event)"
+                  name="empresa"
+                  required>
+                  <option value="">Selecione uma empresa</option>
+                  <option *ngFor="let empresa of empresas" [value]="empresa.id">
+                    {{ empresa.nome }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <label class="form-label">Salário</label>
+                <input 
+                  type="number" 
+                  class="form-control" 
+                  [(ngModel)]="vaga.salario"
+                  name="salario"
+                  placeholder="0.00"
+                  step="0.01">
+              </div>
+            </div>
+            
+            <div class="row mt-3">
+              <div class="col-md-12">
+                <label class="form-label">Descrição</label>
+                <textarea 
+                  class="form-control" 
+                  [(ngModel)]="vaga.descricao"
+                  name="descricao"
+                  rows="3"
+                  placeholder="Descreva a vaga..."></textarea>
+              </div>
+            </div>
+            
+            <div class="row mt-3">
+              <div class="col-md-12">
+                <label class="form-label">Requisitos</label>
+                <textarea 
+                  class="form-control" 
+                  [(ngModel)]="vaga.requisitos"
+                  name="requisitos"
+                  rows="3"
+                  placeholder="Liste os requisitos..."></textarea>
+              </div>
+            </div>
+            
+            <div class="row mt-3">
+              <div class="col-12">
+                <label class="form-label">Candidatos</label>
+                <div class="d-flex align-items-center">
+                  <span class="badge bg-info me-2">
+                    {{ candidatosSelecionados.length }} candidato(s) selecionado(s)
+                  </span>
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-secondary btn-sm"
+                    (click)="abrirModalCandidatos()">
+                    <i class="fas fa-users me-1"></i>
+                    Gerenciar Candidatos
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row mt-4">
+              <div class="col-12">
+                <button 
+                  type="submit" 
+                  class="btn btn-success me-2"
+                  [disabled]="loading || !vagaForm.valid">
+                  <i class="fas fa-save me-2"></i>
+                  {{ isEdicao ? 'Atualizar' : 'Salvar' }}
+                </button>
+                <button 
+                  type="button" 
+                  class="btn btn-secondary"
+                  (click)="cancelar()">
+                  <i class="fas fa-times me-2"></i>
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Candidatos -->
+<div class="modal fade" [class.show]="showCandidatosModal" [style.display]="showCandidatosModal ? 'block' : 'none'" *ngIf="showCandidatosModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-users me-2"></i>
+          Selecionar Candidatos
+        </h5>
+        <button type="button" class="btn-close" (click)="fecharModalCandidatos()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12" *ngFor="let candidato of candidatos">
+            <div class="form-check mb-2">
+              <input 
+                class="form-check-input" 
+                type="checkbox"
+                [checked]="isCandidatoSelecionado(candidato.id!)"
+                (change)="toggleCandidato(candidato.id!)">
+              <label class="form-check-label">
+                {{ candidato.nome }}
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="fecharModalCandidatos()">
+          <i class="fas fa-check me-2"></i>
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="showCandidatosModal" *ngIf="showCandidatosModal" (click)="fecharModalCandidatos()"></div>
