@@ -57,3 +57,4 @@ class CandidatoServiceUnitTest {
         assertTrue(ex.getMessage().contains("CPF"));
     }
 }
+
