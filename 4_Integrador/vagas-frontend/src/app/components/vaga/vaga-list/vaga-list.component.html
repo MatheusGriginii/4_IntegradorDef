@@ -1,122 +1,184 @@
-﻿<div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">
-            <i class="fas fa-briefcase me-2"></i>
-            Vagas
-          </h5>
-          <button class="btn btn-primary" (click)="novaVaga()">
-            <i class="fas fa-plus me-2"></i>
-            Nova Vaga
+<div class="container mt-4 fade-in">
+  <div class="page-header">
+    <h1>
+      <i class="fas fa-cookie-bite me-3"></i>
+      Produtos da Padaria
+    </h1>
+    <p>Gerencie todos os produtos disponíveis</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <span>
+        <i class="fas fa-list me-2"></i>
+        Lista de Produtos
+      </span>
+      <button class="btn btn-primary" (click)="novoProduto()">
+        <i class="fas fa-plus me-2"></i>
+        Novo Produto
+      </button>
+    </div>
+    
+    <div class="card-body">
+      <!-- Filtros -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <label class="form-label">
+            <i class="fas fa-search me-2"></i>Filtrar por Nome:
+          </label>
+          <div class="input-group">
+            <input 
+              type="text" 
+              class="form-control" 
+              [(ngModel)]="filtroNome"
+              placeholder="Digite o nome do produto..."
+              (keyup.enter)="buscarPorNome()">
+            <button class="btn btn-primary" (click)="buscarPorNome()">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">
+            <i class="fas fa-tags me-2"></i>Filtrar por Categoria:
+          </label>
+          <select class="form-control" [(ngModel)]="filtroCategoria" (change)="buscarPorCategoria()">
+            <option value="">Todas as categorias</option>
+            <option *ngFor="let cat of categorias" [value]="cat.nome">
+              {{ cat.nome }}
+            </option>
+          </select>
+        </div>
+
+        <div class="col-md-4 d-flex align-items-end gap-2">
+          <div class="form-check">
+            <input 
+              class="form-check-input" 
+              type="checkbox" 
+              id="disponiveis"
+              [(ngModel)]="mostrarDisponiveis"
+              (change)="filtrarDisponiveis()">
+            <label class="form-check-label" for="disponiveis">
+              Apenas disponíveis
+            </label>
+          </div>
+          <button class="btn btn-secondary" (click)="limparFiltros()">
+            <i class="fas fa-eraser me-2"></i>Limpar
           </button>
         </div>
-        
-        <div class="card-body">
-          <!-- Filtros -->
-          <div class="row mb-3">
-            <div class="col-md-4">
-              <label class="form-label">Filtrar por Título:</label>
-              <div class="input-group">
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  [(ngModel)]="filtroTitulo"
-                  placeholder="Digite o título..."
-                  (keyup.enter)="buscarPorTitulo()">
-                <button class="btn btn-outline-secondary" (click)="buscarPorTitulo()">
-                  <i class="fas fa-search"></i>
+      </div>
+      
+      <!-- Tabela -->
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Imagem</th>
+              <th>Nome</th>
+              <th>Categoria</th>
+              <th>Preço</th>
+              <th>Estoque</th>
+              <th>Status</th>
+              <th class="text-center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let produto of produtosFiltrados">
+              <td>
+                <img 
+                  [src]="produto.imagemUrl || 'assets/produto-placeholder.png'" 
+                  [alt]="produto.nome" 
+                  style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 2px solid #F0E6D9;">
+              </td>
+              <td>
+                <i class="fas fa-bread-slice icon-product me-2"></i>
+                <strong>{{ produto.nome }}</strong>
+                <br>
+                <small class="text-muted">{{ produto.descricao }}</small>
+              </td>
+              <td>
+                <span class="badge badge-info">
+                  <i class="fas fa-tag me-1"></i>
+                  {{ produto.categoria?.nome || 'Sem categoria' }}
+                </span>
+              </td>
+              <td class="fw-bold" style="color: #D2691E;">
+                R$ {{ produto.preco | number:'1.2-2' }}
+              </td>
+              <td>
+                <span [class.text-danger]="(produto.estoque || 0) < 10" 
+                      [class.text-warning]="(produto.estoque || 0) >= 10 && (produto.estoque || 0) < 50"
+                      [class.text-success]="(produto.estoque || 0) >= 50">
+                  <i class="fas fa-box me-1"></i>
+                  {{ produto.estoque || 0 }} un.
+                </span>
+              </td>
+              <td>
+                <span *ngIf="produto.disponivel" class="badge badge-success">
+                  <i class="fas fa-check me-1"></i>Disponível
+                </span>
+                <span *ngIf="!produto.disponivel" class="badge badge-danger">
+                  <i class="fas fa-times me-1"></i>Indisponível
+                </span>
+              </td>
+              <td class="text-center">
+                <button 
+                  class="btn btn-sm btn-info me-1" 
+                  [routerLink]="['/app/produtos', produto.id]"
+                  title="Visualizar">
+                  <i class="fas fa-eye"></i>
                 </button>
-              </div>
-            </div>
-            
-            <div class="col-md-4">
-              <label class="form-label">Filtrar por Empresa:</label>
-              <div class="input-group">
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  [(ngModel)]="filtroEmpresa"
-                  placeholder="Digite o nome da empresa..."
-                  (keyup.enter)="buscarPorEmpresa()">
-                <button class="btn btn-outline-secondary" (click)="buscarPorEmpresa()">
-                  <i class="fas fa-search"></i>
+                <button 
+                  class="btn btn-sm btn-warning me-1" 
+                  (click)="editarProduto(produto.id!)"
+                  title="Editar">
+                  <i class="fas fa-edit"></i>
                 </button>
-              </div>
-            </div>
-            
-            <div class="col-md-4 d-flex align-items-end">
-              <button class="btn btn-outline-danger me-2" (click)="limparFiltros()">
-                <i class="fas fa-times me-2"></i>
-                Limpar Filtros
-              </button>
-              <button class="btn btn-outline-secondary" (click)="carregarVagas()">
-                <i class="fas fa-sync-alt me-2"></i>
-                Atualizar
-              </button>
-            </div>
+                <button 
+                  class="btn btn-sm btn-danger" 
+                  (click)="excluirProduto(produto)"
+                  title="Excluir">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mensagem quando vazio -->
+      <div *ngIf="produtosFiltrados.length === 0 && !loading" class="alert alert-info text-center">
+        <i class="fas fa-info-circle me-2"></i>
+        Nenhum produto encontrado.
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="mt-2">Carregando produtos...</p>
+      </div>
+
+      <!-- Resumo -->
+      <div class="mt-4 p-3" style="background: linear-gradient(135deg, #FFE5D9 0%, #FFF4E6 100%); border-radius: 12px;">
+        <div class="row text-center">
+          <div class="col-md-3">
+            <h4 class="mb-0">{{ produtos.length }}</h4>
+            <small class="text-muted">Total de Produtos</small>
           </div>
-          
-          <!-- Loading -->
-          <div *ngIf="loading" class="text-center">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Carregando...</span>
-            </div>
+          <div class="col-md-3">
+            <h4 class="mb-0">{{ categorias.length }}</h4>
+            <small class="text-muted">Categorias</small>
           </div>
-          
-          <!-- Tabela -->
-          <div *ngIf="!loading" class="table-responsive">
-            <table class="table table-striped table-hover">
-              <thead class="table-dark">
-                <tr>
-                  <th>ID</th>
-                  <th>Título</th>
-                  <th>Empresa</th>
-                  <th>Salário</th>
-                  <th>Candidatos</th>
-                  <th class="text-center">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let vaga of vagasFiltradas">
-                  <td>{{ vaga.id }}</td>
-                  <td>{{ vaga.titulo }}</td>
-                  <td>{{ vaga.empresa?.nome || 'N/A' }}</td>
-                  <td>
-                    <span *ngIf="vaga.salario" class="text-success">
-                      {{ vaga.salario | currency:'BRL':'symbol':'1.2-2' }}
-                    </span>
-                    <span *ngIf="!vaga.salario" class="text-muted">A combinar</span>
-                  </td>
-                  <td>
-                    <span class="badge bg-info">
-                      {{ vaga.candidatos?.length || 0 }} candidato(s)
-                    </span>
-                  </td>
-                  <td class="text-center">
-                    <button 
-                      class="btn btn-sm btn-outline-primary me-2" 
-                      (click)="editarVaga(vaga.id!)"
-                      title="Editar">
-                      <i class="fas fa-edit"></i>
-                    </button>
-                    <button 
-                      class="btn btn-sm btn-outline-danger" 
-                      (click)="excluirVaga(vaga)"
-                      title="Excluir">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr *ngIf="vagasFiltradas.length === 0">
-                  <td colspan="6" class="text-center text-muted">
-                    <i class="fas fa-inbox fa-2x mb-2"></i>
-                    <p>Nenhuma vaga encontrada</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="col-md-3">
+            <h4 class="mb-0">{{ contarDisponiveis() }}</h4>
+            <small class="text-muted">Disponíveis</small>
+          </div>
+          <div class="col-md-3">
+            <h4 class="mb-0">{{ contarEstoqueBaixo() }}</h4>
+            <small class="text-muted">Estoque Baixo</small>
           </div>
         </div>
       </div>

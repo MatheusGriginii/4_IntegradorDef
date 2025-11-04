@@ -1,0 +1,173 @@
+<div class="container mt-5 pt-4 fade-in">
+  <!-- Header Principal -->
+  <div class="page-header text-center">
+    <h1>
+      <i class="fas fa-bread-slice me-3"></i>
+      Bem-vindo à Padaria Monte Líbano
+    </h1>
+    <p class="lead">Sistema de Gestão - Tradição e Qualidade em Cada Produto</p>
+  </div>
+
+  <!-- Cards de Estatísticas -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <i class="fas fa-cookie-bite fa-3x icon-product mb-3"></i>
+          <h3 class="card-title">125</h3>
+          <p class="text-muted mb-0">Produtos</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <i class="fas fa-tags fa-3x icon-category mb-3"></i>
+          <h3 class="card-title">12</h3>
+          <p class="text-muted mb-0">Categorias</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <i class="fas fa-user-friends fa-3x icon-client mb-3"></i>
+          <h3 class="card-title">450</h3>
+          <p class="text-muted mb-0">Clientes</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <i class="fas fa-shopping-cart fa-3x icon-order mb-3"></i>
+          <h3 class="card-title">89</h3>
+          <p class="text-muted mb-0">Pedidos Hoje</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seção de Produtos em Destaque -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-star me-2"></i>
+          Produtos em Destaque
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="product-card">
+                <div class="product-image d-flex align-items-center justify-content-center">
+                  <i class="fas fa-bread-slice fa-4x" style="color: #8B4513;"></i>
+                </div>
+                <div class="product-info">
+                  <div class="product-name">Pão Francês</div>
+                  <p class="text-muted mb-2">Fresquinho e crocante</p>
+                  <div class="product-price">R$ 0,75</div>
+                  <span class="badge badge-success">Disponível</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="product-card">
+                <div class="product-image d-flex align-items-center justify-content-center">
+                  <i class="fas fa-cookie fa-4x" style="color: #D2691E;"></i>
+                </div>
+                <div class="product-info">
+                  <div class="product-name">Bolo de Chocolate</div>
+                  <p class="text-muted mb-2">Receita da casa</p>
+                  <div class="product-price">R$ 45,00</div>
+                  <span class="badge badge-success">Disponível</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="product-card">
+                <div class="product-image d-flex align-items-center justify-content-center">
+                  <i class="fas fa-coffee fa-4x" style="color: #8B4513;"></i>
+                </div>
+                <div class="product-info">
+                  <div class="product-name">Café Especial</div>
+                  <p class="text-muted mb-2">Grãos selecionados</p>
+                  <div class="product-price">R$ 5,50</div>
+                  <span class="badge badge-success">Disponível</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seção de Navegação Rápida -->
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-chart-line me-2"></i>
+          Ações Rápidas
+        </div>
+        <div class="card-body">
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" routerLink="/app/produtos">
+              <i class="fas fa-plus me-2"></i>
+              Novo Produto
+            </button>
+            <button class="btn btn-success" routerLink="/app/pedidos">
+              <i class="fas fa-shopping-cart me-2"></i>
+              Novo Pedido
+            </button>
+            <button class="btn btn-info" routerLink="/app/clientes">
+              <i class="fas fa-user-plus me-2"></i>
+              Novo Cliente
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-info-circle me-2"></i>
+          Sobre o Sistema
+        </div>
+        <div class="card-body">
+          <p>
+            <i class="fas fa-check-circle text-success me-2"></i>
+            Sistema completo de gestão
+          </p>
+          <p>
+            <i class="fas fa-check-circle text-success me-2"></i>
+            Controle de estoque e produtos
+          </p>
+          <p>
+            <i class="fas fa-check-circle text-success me-2"></i>
+            Gerenciamento de clientes e pedidos
+          </p>
+          <p class="mb-0">
+            <i class="fas fa-check-circle text-success me-2"></i>
+            Relatórios e estatísticas
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="text-center mt-5 pt-4 pb-4">
+    <p class="text-muted">
+      <i class="fas fa-heart" style="color: #e57373;"></i>
+      Padaria Monte Líbano - Tradição há 60 anos
+    </p>
+  </div>
+</div>

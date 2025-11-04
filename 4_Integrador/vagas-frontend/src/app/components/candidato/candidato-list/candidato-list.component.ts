@@ -1,43 +1,44 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { CandidatoService } from '../../../services/candidato.service';
-import { Candidato } from '../../../models/candidato';
+import { Router, RouterModule } from '@angular/router';
+import { ClienteService } from '../../../services/candidato.service';
+import { Cliente } from '../../../models/candidato';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-candidato-list',
-  imports: [CommonModule, FormsModule],
+  selector: 'app-cliente-list',
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './candidato-list.component.html',
   styleUrl: './candidato-list.component.scss'
 })
-export class CandidatoListComponent implements OnInit {
-  candidatos: Candidato[] = [];
-  candidatosFiltrados: Candidato[] = [];
+export class ClienteListComponent implements OnInit {
+  clientes: Cliente[] = [];
+  clientesFiltrados: Cliente[] = [];
   filtroNome: string = '';
-  filtroTituloVaga: string = '';
+  filtroEmail: string = '';
   loading: boolean = false;
 
   constructor(
-    private candidatoService: CandidatoService,
+    private clienteService: ClienteService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.carregarCandidatos();
+    this.carregarClientes();
   }
 
-  carregarCandidatos(): void {
+  carregarClientes(): void {
     this.loading = true;
-    this.candidatoService.listar().subscribe({
-      next: (candidatos) => {
-        this.candidatos = candidatos;
-        this.candidatosFiltrados = candidatos;
+    this.clienteService.listar().subscribe({
+      next: (clientes) => {
+        this.clientes = clientes;
+        this.clientesFiltrados = clientes;
         this.loading = false;
       },
       error: (erro) => {
-        Swal.fire('Erro!', erro.error || 'Erro ao carregar candidatos', 'error');
+        Swal.fire('Erro!', erro.error || 'Erro ao carregar clientes', 'error');
         this.loading = false;
       }
     });
@@ -46,57 +47,57 @@ export class CandidatoListComponent implements OnInit {
   buscarPorNome(): void {
     if (this.filtroNome.trim()) {
       this.loading = true;
-      this.candidatoService.buscarPorNome(this.filtroNome).subscribe({
-        next: (candidatos) => {
-          this.candidatosFiltrados = candidatos;
+      this.clienteService.buscarPorNome(this.filtroNome).subscribe({
+        next: (clientes) => {
+          this.clientesFiltrados = clientes;
           this.loading = false;
         },
         error: (erro) => {
-          Swal.fire('Erro!', erro.error || 'Erro ao buscar candidatos', 'error');
+          Swal.fire('Erro!', erro.error || 'Erro ao buscar clientes', 'error');
           this.loading = false;
         }
       });
     } else {
-      this.candidatosFiltrados = this.candidatos;
+      this.clientesFiltrados = this.clientes;
     }
   }
 
-  buscarPorTituloVaga(): void {
-    if (this.filtroTituloVaga.trim()) {
+  buscarPorEmail(): void {
+    if (this.filtroEmail.trim()) {
       this.loading = true;
-      this.candidatoService.buscarPorTituloVaga(this.filtroTituloVaga).subscribe({
-        next: (candidatos) => {
-          this.candidatosFiltrados = candidatos;
+      this.clienteService.buscarPorEmail(this.filtroEmail).subscribe({
+        next: (cliente) => {
+          this.clientesFiltrados = cliente ? [cliente] : [];
           this.loading = false;
         },
         error: (erro) => {
-          Swal.fire('Erro!', erro.error || 'Erro ao buscar candidatos', 'error');
+          Swal.fire('Erro!', erro.error || 'Erro ao buscar cliente', 'error');
           this.loading = false;
         }
       });
     } else {
-      this.candidatosFiltrados = this.candidatos;
+      this.clientesFiltrados = this.clientes;
     }
   }
 
   limparFiltros(): void {
     this.filtroNome = '';
-    this.filtroTituloVaga = '';
-    this.candidatosFiltrados = this.candidatos;
+    this.filtroEmail = '';
+    this.clientesFiltrados = this.clientes;
   }
 
-  editarCandidato(id: number): void {
-    this.router.navigate(['/app/candidatos/editar', id]);
+  editarCliente(id: number): void {
+    this.router.navigate(['/app/clientes/editar', id]);
   }
 
-  novoCandidato(): void {
-    this.router.navigate(['/app/candidatos/novo']);
+  novoCliente(): void {
+    this.router.navigate(['/app/clientes/novo']);
   }
 
-  excluirCandidato(candidato: Candidato): void {
+  excluirCliente(cliente: Cliente): void {
     Swal.fire({
       title: 'Tem certeza?',
-      text: `Deseja excluir o candidato ${candidato.nome}?`,
+      text: `Deseja excluir o cliente ${cliente.nome}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -104,14 +105,14 @@ export class CandidatoListComponent implements OnInit {
       confirmButtonText: 'Sim, excluir!',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
-      if (result.isConfirmed && candidato.id) {
-        this.candidatoService.deletar(candidato.id).subscribe({
+      if (result.isConfirmed && cliente.id) {
+        this.clienteService.deletar(cliente.id).subscribe({
           next: () => {
-            Swal.fire('Excluído!', 'Candidato excluído com sucesso.', 'success');
-            this.carregarCandidatos();
+            Swal.fire('Excluído!', 'Cliente excluído com sucesso.', 'success');
+            this.carregarClientes();
           },
           error: (erro) => {
-            Swal.fire('Erro!', erro.error || 'Erro ao excluir candidato', 'error');
+            Swal.fire('Erro!', erro.error || 'Erro ao excluir cliente', 'error');
           }
         });
       }

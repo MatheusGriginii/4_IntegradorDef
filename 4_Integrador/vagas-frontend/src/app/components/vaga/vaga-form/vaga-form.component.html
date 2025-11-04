@@ -13,25 +13,25 @@
           <form #vagaForm="ngForm" (ngSubmit)="salvar()">
             <div class="row">
               <div class="col-md-6">
-                <label class="form-label">Título *</label>
+                <label class="form-label">Nome do Produto *</label>
                 <input 
                   type="text" 
                   class="form-control" 
-                  [(ngModel)]="vaga.titulo"
-                  name="titulo"
+                  [(ngModel)]="vaga.nome"
+                  name="nome"
                   required
-                  placeholder="Digite o título da vaga">
+                  placeholder="Ex: Pão Francês, Bolo de Chocolate">
               </div>
               
               <div class="col-md-6">
-                <label class="form-label">Empresa *</label>
+                <label class="form-label">Categoria *</label>
                 <select 
                   class="form-select" 
-                  [ngModel]="vaga.empresa?.id"
+                  [ngModel]="vaga.categoria?.id"
                   (ngModelChange)="onEmpresaChange($event)"
-                  name="empresa"
+                  name="categoria"
                   required>
-                  <option value="">Selecione uma empresa</option>
+                  <option value="">Selecione uma categoria</option>
                   <option *ngFor="let empresa of empresas" [value]="empresa.id">
                     {{ empresa.nome }}
                   </option>
@@ -41,14 +41,25 @@
             
             <div class="row mt-3">
               <div class="col-md-6">
-                <label class="form-label">Salário</label>
+                <label class="form-label">Preço (R$)</label>
                 <input 
                   type="number" 
                   class="form-control" 
-                  [(ngModel)]="vaga.salario"
-                  name="salario"
+                  [(ngModel)]="vaga.preco"
+                  name="preco"
                   placeholder="0.00"
                   step="0.01">
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label">Estoque</label>
+                <input 
+                  type="number" 
+                  class="form-control" 
+                  [(ngModel)]="vaga.estoque"
+                  name="estoque"
+                  placeholder="Quantidade em estoque"
+                  min="0">
               </div>
             </div>
             
@@ -60,19 +71,33 @@
                   [(ngModel)]="vaga.descricao"
                   name="descricao"
                   rows="3"
-                  placeholder="Descreva a vaga..."></textarea>
+                  placeholder="Descreva o produto..."></textarea>
               </div>
             </div>
             
             <div class="row mt-3">
-              <div class="col-md-12">
-                <label class="form-label">Requisitos</label>
-                <textarea 
+              <div class="col-md-6">
+                <label class="form-label">URL da Imagem</label>
+                <input 
+                  type="text" 
                   class="form-control" 
-                  [(ngModel)]="vaga.requisitos"
-                  name="requisitos"
-                  rows="3"
-                  placeholder="Liste os requisitos..."></textarea>
+                  [(ngModel)]="vaga.imagemUrl"
+                  name="imagemUrl"
+                  placeholder="https://exemplo.com/imagem.jpg">
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-check mt-4">
+                  <input 
+                    class="form-check-input" 
+                    type="checkbox"
+                    [(ngModel)]="vaga.disponivel"
+                    name="disponivel"
+                    id="disponivel">
+                  <label class="form-check-label" for="disponivel">
+                    Produto Disponível
+                  </label>
+                </div>
               </div>
             </div>
             

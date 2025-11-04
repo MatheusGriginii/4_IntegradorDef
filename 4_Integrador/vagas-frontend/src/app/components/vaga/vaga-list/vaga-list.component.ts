@@ -1,102 +1,148 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { VagaService } from '../../../services/vaga.service';
-import { Vaga } from '../../../models/vaga';
+import { Router, RouterModule } from '@angular/router';
+import { ProdutoService } from '../../../services/vaga.service';
+import { CategoriaService } from '../../../services/empresa.service';
+import { Produto } from '../../../models/vaga';
+import { Categoria } from '../../../models/empresa';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-vaga-list',
-  imports: [CommonModule, FormsModule],
+  selector: 'app-produto-list',
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './vaga-list.component.html',
   styleUrl: './vaga-list.component.scss'
 })
-export class VagaListComponent implements OnInit {
-  vagas: Vaga[] = [];
-  vagasFiltradas: Vaga[] = [];
-  filtroTitulo: string = '';
-  filtroEmpresa: string = '';
+export class ProdutoListComponent implements OnInit {
+  produtos: Produto[] = [];
+  produtosFiltrados: Produto[] = [];
+  categorias: Categoria[] = [];
+  filtroNome: string = '';
+  filtroCategoria: string = '';
+  mostrarDisponiveis: boolean = false;
   loading: boolean = false;
 
   constructor(
-    private vagaService: VagaService,
+    private produtoService: ProdutoService,
+    private categoriaService: CategoriaService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.carregarVagas();
+    this.carregarProdutos();
+    this.carregarCategorias();
   }
 
-  carregarVagas(): void {
+  carregarProdutos(): void {
     this.loading = true;
-    this.vagaService.listar().subscribe({
-      next: (vagas) => {
-        this.vagas = vagas;
-        this.vagasFiltradas = vagas;
+    this.produtoService.listar().subscribe({
+      next: (produtos) => {
+        this.produtos = produtos;
+        this.produtosFiltrados = produtos;
         this.loading = false;
       },
       error: (erro) => {
-        Swal.fire('Erro!', erro.error || 'Erro ao carregar vagas', 'error');
+        Swal.fire('Erro!', erro.error || 'Erro ao carregar produtos', 'error');
         this.loading = false;
       }
     });
   }
 
-  buscarPorTitulo(): void {
-    if (this.filtroTitulo.trim()) {
+  carregarCategorias(): void {
+    this.categoriaService.listar().subscribe({
+      next: (categorias) => {
+        this.categorias = categorias;
+      },
+      error: (erro) => {
+        console.error('Erro ao carregar categorias', erro);
+      }
+    });
+  }
+
+  buscarPorNome(): void {
+    if (this.filtroNome.trim()) {
       this.loading = true;
-      this.vagaService.buscarPorTitulo(this.filtroTitulo).subscribe({
-        next: (vagas) => {
-          this.vagasFiltradas = vagas;
+      this.produtoService.buscarPorNome(this.filtroNome).subscribe({
+        next: (produtos) => {
+          this.produtosFiltrados = produtos;
           this.loading = false;
         },
         error: (erro) => {
-          Swal.fire('Erro!', erro.error || 'Erro ao buscar vagas', 'error');
+          Swal.fire('Erro!', erro.error || 'Erro ao buscar produtos', 'error');
           this.loading = false;
         }
       });
     } else {
-      this.vagasFiltradas = this.vagas;
+      this.produtosFiltrados = this.produtos;
     }
   }
 
-  buscarPorEmpresa(): void {
-    if (this.filtroEmpresa.trim()) {
+  buscarPorCategoria(): void {
+    if (this.filtroCategoria.trim()) {
       this.loading = true;
-      this.vagaService.buscarPorEmpresa(this.filtroEmpresa).subscribe({
-        next: (vagas) => {
-          this.vagasFiltradas = vagas;
+      this.produtoService.buscarPorCategoria(this.filtroCategoria).subscribe({
+        next: (produtos) => {
+          this.produtosFiltrados = produtos;
           this.loading = false;
         },
         error: (erro) => {
-          Swal.fire('Erro!', erro.error || 'Erro ao buscar vagas', 'error');
+          Swal.fire('Erro!', erro.error || 'Erro ao buscar produtos', 'error');
           this.loading = false;
         }
       });
     } else {
-      this.vagasFiltradas = this.vagas;
+      this.produtosFiltrados = this.produtos;
     }
+  }
+
+  filtrarDisponiveis(): void {
+    if (this.mostrarDisponiveis) {
+      this.loading = true;
+      this.produtoService.buscarDisponiveis().subscribe({
+        next: (produtos) => {
+          this.produtosFiltrados = produtos;
+          this.loading = false;
+        },
+        error: (erro) => {
+          Swal.fire('Erro!', erro.error || 'Erro ao buscar produtos', 'error');
+          this.loading = false;
+        }
+      });
+    } else {
+      this.produtosFiltrados = this.produtos;
+    }
+  }
+
+  // Métodos auxiliares para o template
+  contarDisponiveis(): number {
+    return this.produtosFiltrados.filter(p => p.disponivel === true).length;
+  }
+
+  contarEstoqueBaixo(): number {
+    return this.produtosFiltrados.filter(p => (p.estoque || 0) < 10).length;
   }
 
   limparFiltros(): void {
-    this.filtroTitulo = '';
-    this.filtroEmpresa = '';
-    this.vagasFiltradas = this.vagas;
+    this.filtroNome = '';
+    this.filtroCategoria = '';
+    this.mostrarDisponiveis = false;
+    this.produtosFiltrados = this.produtos;
   }
 
-  editarVaga(id: number): void {
-    this.router.navigate(['/app/vagas/editar', id]);
+  editarProduto(id: number): void {
+    this.router.navigate(['/app/produtos/editar', id]);
   }
 
-  novaVaga(): void {
-    this.router.navigate(['/app/vagas/novo']);
+  novoProduto(): void {
+    this.router.navigate(['/app/produtos/novo']);
   }
 
-  excluirVaga(vaga: Vaga): void {
+  excluirProduto(produto: Produto): void {
     Swal.fire({
       title: 'Tem certeza?',
-      text: `Deseja excluir a vaga ${vaga.titulo}?`,
+      text: `Deseja excluir o produto ${produto.nome}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -104,14 +150,14 @@ export class VagaListComponent implements OnInit {
       confirmButtonText: 'Sim, excluir!',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
-      if (result.isConfirmed && vaga.id) {
-        this.vagaService.deletar(vaga.id).subscribe({
+      if (result.isConfirmed && produto.id) {
+        this.produtoService.deletar(produto.id).subscribe({
           next: () => {
-            Swal.fire('Excluído!', 'Vaga excluída com sucesso.', 'success');
-            this.carregarVagas();
+            Swal.fire('Excluído!', 'Produto excluído com sucesso.', 'success');
+            this.carregarProdutos();
           },
           error: (erro) => {
-            Swal.fire('Erro!', erro.error || 'Erro ao excluir vaga', 'error');
+            Swal.fire('Erro!', erro.error || 'Erro ao excluir produto', 'error');
           }
         });
       }

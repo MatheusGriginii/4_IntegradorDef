@@ -88,7 +88,7 @@
                 [checked]="isVagaSelecionada(vaga.id!)"
                 (change)="toggleVaga(vaga.id!)">
               <label class="form-check-label">
-                {{ vaga.titulo }} - {{ vaga.empresa?.nome }}
+                {{ vaga.nome }} - {{ vaga.categoria?.nome }}
               </label>
             </div>
           </div>

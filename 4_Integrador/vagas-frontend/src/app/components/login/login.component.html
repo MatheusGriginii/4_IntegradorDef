@@ -1,13 +1,19 @@
 <div class="login-container">
   <div class="login-card">
     <div class="card-header text-center">
-      <h2>Sistema de Gestão de Vagas</h2>
-      <p class="text-muted">Faça login para continuar</p>
+      <div class="bakery-icon mb-3">
+        <i class="fas fa-bread-slice fa-4x"></i>
+      </div>
+      <h2>Padaria Monte Líbano</h2>
+      <p class="text-muted">Sistema de Gestão</p>
+      <p class="tagline">Tradição e Qualidade há 60 anos</p>
     </div>
     
     <form (ngSubmit)="onLogin()" #loginForm="ngForm">
       <div class="form-group mb-3">
-        <label for="usuario" class="form-label">Usuário:</label>
+        <label for="usuario" class="form-label">
+          <i class="fas fa-user me-2"></i>Usuário:
+        </label>
         <input 
           type="text" 
           id="usuario" 
@@ -20,7 +26,9 @@
       </div>
       
       <div class="form-group mb-3">
-        <label for="senha" class="form-label">Senha:</label>
+        <label for="senha" class="form-label">
+          <i class="fas fa-lock me-2"></i>Senha:
+        </label>
         <input 
           type="password" 
           id="senha" 
@@ -37,8 +45,16 @@
         class="btn btn-primary w-100"
         [disabled]="!loginForm.form.valid"
       >
+        <i class="fas fa-sign-in-alt me-2"></i>
         Entrar
       </button>
     </form>
+    
+    <div class="text-center mt-3">
+      <small class="text-muted">
+        <i class="fas fa-shield-alt me-1"></i>
+        Acesso seguro
+      </small>
+    </div>
   </div>
 </div>

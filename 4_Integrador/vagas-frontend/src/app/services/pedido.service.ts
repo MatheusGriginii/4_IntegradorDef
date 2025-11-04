@@ -1,0 +1,46 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Pedido } from '../models/pedido';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PedidoService {
+  private baseUrl = 'http://localhost:8080/pedidos';
+
+  constructor(private http: HttpClient) { }
+
+  listar(): Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(this.baseUrl);
+  }
+
+  buscarPorId(id: number): Observable<Pedido> {
+    return this.http.get<Pedido>(`${this.baseUrl}/${id}`);
+  }
+
+  criar(pedido: Pedido): Observable<Pedido> {
+    return this.http.post<Pedido>(this.baseUrl, pedido);
+  }
+
+  atualizar(id: number, pedido: Pedido): Observable<Pedido> {
+    return this.http.put<Pedido>(`${this.baseUrl}/${id}`, pedido);
+  }
+
+  deletar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  // Filtros personalizados
+  buscarPorCliente(clienteId: number): Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(`${this.baseUrl}/cliente/${clienteId}`);
+  }
+
+  buscarPorStatus(status: string): Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(`${this.baseUrl}/status/${status}`);
+  }
+
+  buscarPorData(dataInicio: string, dataFim: string): Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(`${this.baseUrl}/periodo?inicio=${dataInicio}&fim=${dataFim}`);
+  }
+}

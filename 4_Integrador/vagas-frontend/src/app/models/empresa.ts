@@ -1,5 +1,9 @@
-export interface Empresa {
+export interface Categoria {
   id?: number;
   nome: string;
-  vagas?: any[];
+  descricao?: string;
+  produtos?: any[];
 }
+
+// Export para compatibilidade com código antigo
+export type Empresa = Categoria;

@@ -1,42 +1,43 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { EmpresaService } from '../../../services/empresa.service';
-import { Empresa } from '../../../models/empresa';
+import { Router, RouterModule } from '@angular/router';
+import { CategoriaService } from '../../../services/empresa.service';
+import { Categoria } from '../../../models/empresa';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-empresa-list',
-  imports: [CommonModule, FormsModule],
+  selector: 'app-categoria-list',
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './empresa-list.component.html',
   styleUrl: './empresa-list.component.scss'
 })
-export class EmpresaListComponent implements OnInit {
-  empresas: Empresa[] = [];
-  empresasFiltradas: Empresa[] = [];
+export class CategoriaListComponent implements OnInit {
+  categorias: Categoria[] = [];
+  categoriasFiltradas: Categoria[] = [];
   filtroNome: string = '';
   loading: boolean = false;
 
   constructor(
-    private empresaService: EmpresaService,
+    private categoriaService: CategoriaService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.carregarEmpresas();
+    this.carregarCategorias();
   }
 
-  carregarEmpresas(): void {
+  carregarCategorias(): void {
     this.loading = true;
-    this.empresaService.listar().subscribe({
-      next: (empresas) => {
-        this.empresas = empresas;
-        this.empresasFiltradas = empresas;
+    this.categoriaService.listar().subscribe({
+      next: (categorias: Categoria[]) => {
+        this.categorias = categorias;
+        this.categoriasFiltradas = categorias;
         this.loading = false;
       },
-      error: (erro) => {
-        Swal.fire('Erro!', erro.error || 'Erro ao carregar empresas', 'error');
+      error: (erro: any) => {
+        Swal.fire('Erro!', erro.error || 'Erro ao carregar categorias', 'error');
         this.loading = false;
       }
     });
@@ -45,33 +46,33 @@ export class EmpresaListComponent implements OnInit {
   buscarPorNome(): void {
     if (this.filtroNome.trim()) {
       this.loading = true;
-      this.empresaService.buscarPorNome(this.filtroNome).subscribe({
-        next: (empresas) => {
-          this.empresasFiltradas = empresas;
+      this.categoriaService.buscarPorNome(this.filtroNome).subscribe({
+        next: (categorias: Categoria[]) => {
+          this.categoriasFiltradas = categorias;
           this.loading = false;
         },
-        error: (erro) => {
-          Swal.fire('Erro!', erro.error || 'Erro ao buscar empresas', 'error');
+        error: (erro: any) => {
+          Swal.fire('Erro!', erro.error || 'Erro ao buscar categorias', 'error');
           this.loading = false;
         }
       });
     } else {
-      this.empresasFiltradas = this.empresas;
+      this.categoriasFiltradas = this.categorias;
     }
   }
 
-  editarEmpresa(id: number): void {
-    this.router.navigate(['/app/empresas/editar', id]);
+  editarCategoria(id: number): void {
+    this.router.navigate(['/app/categorias/editar', id]);
   }
 
-  novaEmpresa(): void {
-    this.router.navigate(['/app/empresas/novo']);
+  novaCategoria(): void {
+    this.router.navigate(['/app/categorias/novo']);
   }
 
-  excluirEmpresa(empresa: Empresa): void {
+  excluirCategoria(categoria: Categoria): void {
     Swal.fire({
       title: 'Tem certeza?',
-      text: `Deseja excluir a empresa ${empresa.nome}?`,
+      text: `Deseja excluir a categoria ${categoria.nome}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -79,14 +80,14 @@ export class EmpresaListComponent implements OnInit {
       confirmButtonText: 'Sim, excluir!',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
-      if (result.isConfirmed && empresa.id) {
-        this.empresaService.deletar(empresa.id).subscribe({
+      if (result.isConfirmed && categoria.id) {
+        this.categoriaService.deletar(categoria.id).subscribe({
           next: () => {
-            Swal.fire('Excluído!', 'Empresa excluída com sucesso.', 'success');
-            this.carregarEmpresas();
+            Swal.fire('Excluído!', 'Categoria excluída com sucesso.', 'success');
+            this.carregarCategorias();
           },
-          error: (erro) => {
-            Swal.fire('Erro!', erro.error || 'Erro ao excluir empresa', 'error');
+          error: (erro: any) => {
+            Swal.fire('Erro!', erro.error || 'Erro ao excluir categoria', 'error');
           }
         });
       }

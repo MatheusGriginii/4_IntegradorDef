@@ -1,42 +1,45 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Candidato } from '../models/candidato';
+import { Cliente } from '../models/candidato';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CandidatoService {
-  private baseUrl = 'http://localhost:8080/candidatos';
+export class ClienteService {
+  private baseUrl = 'http://localhost:8080/clientes';
 
   constructor(private http: HttpClient) { }
 
-  listar(): Observable<Candidato[]> {
-    return this.http.get<Candidato[]>(this.baseUrl);
+  listar(): Observable<Cliente[]> {
+    return this.http.get<Cliente[]>(this.baseUrl);
   }
 
-  buscarPorId(id: number): Observable<Candidato> {
-    return this.http.get<Candidato>(`${this.baseUrl}/${id}`);
+  buscarPorId(id: number): Observable<Cliente> {
+    return this.http.get<Cliente>(`${this.baseUrl}/${id}`);
   }
 
-  criar(candidato: Candidato): Observable<Candidato> {
-    return this.http.post<Candidato>(this.baseUrl, candidato);
+  criar(cliente: Cliente): Observable<Cliente> {
+    return this.http.post<Cliente>(this.baseUrl, cliente);
   }
 
-  atualizar(id: number, candidato: Candidato): Observable<Candidato> {
-    return this.http.put<Candidato>(`${this.baseUrl}/${id}`, candidato);
+  atualizar(id: number, cliente: Cliente): Observable<Cliente> {
+    return this.http.put<Cliente>(`${this.baseUrl}/${id}`, cliente);
   }
 
   deletar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  // Filtros personalizados (implementar conforme endpoints do back)
-  buscarPorNome(nome: string): Observable<Candidato[]> {
-    return this.http.get<Candidato[]>(`${this.baseUrl}/buscar?nome=${nome}`);
+  // Filtros personalizados
+  buscarPorNome(nome: string): Observable<Cliente[]> {
+    return this.http.get<Cliente[]>(`${this.baseUrl}/buscar?nome=${nome}`);
   }
 
-  buscarPorTituloVaga(titulo: string): Observable<Candidato[]> {
-    return this.http.get<Candidato[]>(`${this.baseUrl}/por-titulo?titulo=${titulo}`);
+  buscarPorEmail(email: string): Observable<Cliente> {
+    return this.http.get<Cliente>(`${this.baseUrl}/email?email=${email}`);
   }
 }
+
+// Export para compatibilidade com código antigo
+export { ClienteService as CandidatoService };

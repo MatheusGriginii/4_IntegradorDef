@@ -1,10 +1,13 @@
-export interface Vaga {
+export interface Produto {
   id?: number;
-  titulo: string;
+  nome: string;
   descricao?: string;
-  requisitos?: string;
-  salario?: number;
-  empresa?: any;
-  candidatos?: any[];
-  usuarios?: any[];
+  preco?: number;
+  categoria?: any;
+  estoque?: number;
+  imagemUrl?: string;
+  disponivel?: boolean;
 }
+
+// Export para compatibilidade com código antigo
+export type Vaga = Produto;

@@ -17,7 +17,7 @@ import Swal from 'sweetalert2';
   styleUrl: './vaga-form.component.scss'
 })
 export class VagaFormComponent implements OnInit {
-  vaga: Vaga = { titulo: '' };
+  vaga: Vaga = { nome: '' };
   empresas: Empresa[] = [];
   candidatos: Candidato[] = [];
   candidatosSelecionados: number[] = [];
@@ -46,13 +46,13 @@ export class VagaFormComponent implements OnInit {
   carregarVaga(id: number): void {
     this.loading = true;
     this.vagaService.buscarPorId(id).subscribe({
-      next: (vaga) => {
+      next: (vaga: any) => {
         this.vaga = vaga;
-        this.candidatosSelecionados = vaga.candidatos?.map(c => c.id) || [];
+        this.candidatosSelecionados = vaga.clientes?.map((c: any) => c.id) || [];
         this.loading = false;
       },
-      error: (erro) => {
-        Swal.fire('Erro!', erro.error || 'Erro ao carregar vaga', 'error');
+      error: (erro: any) => {
+        Swal.fire('Erro!', erro.error || 'Erro ao carregar produto', 'error');
         this.loading = false;
       }
     });
@@ -81,13 +81,13 @@ export class VagaFormComponent implements OnInit {
   }
 
   salvar(): void {
-    if (!this.vaga.titulo?.trim()) {
-      Swal.fire('Atenção!', 'Título é obrigatório', 'warning');
+    if (!this.vaga.nome?.trim()) {
+      Swal.fire('Atenção!', 'Nome é obrigatório', 'warning');
       return;
     }
 
-    if (!this.vaga.empresa?.id) {
-      Swal.fire('Atenção!', 'Empresa é obrigatória', 'warning');
+    if (!this.vaga.categoria?.id) {
+      Swal.fire('Atenção!', 'Categoria é obrigatória', 'warning');
       return;
     }
 
@@ -139,10 +139,10 @@ export class VagaFormComponent implements OnInit {
 
   onEmpresaChange(empresaId: string): void {
     if (empresaId) {
-      const empresa = this.empresas.find(e => e.id === +empresaId);
-      this.vaga.empresa = empresa;
+      const categoria = this.empresas.find(e => e.id === +empresaId);
+      this.vaga.categoria = categoria;
     } else {
-      this.vaga.empresa = undefined;
+      this.vaga.categoria = undefined;
     }
   }
 }

@@ -1,0 +1,233 @@
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="hero-text text-center" data-aos="fade-up">
+            <h1 class="display-3 fw-bold mb-3">
+              <span class="brand-name">ADORELA</span>
+            </h1>
+            <h2 class="h4 mb-4 text-white subtitle-text">Panificadora & Confeitaria</h2>
+            <div class="hero-buttons">
+              <a href="tel:1112345678" class="btn btn-primary-red btn-lg me-3 shadow">
+                <i class="fas fa-phone me-2"></i>
+                Fazer Pedido
+              </a>
+              <a href="https://wa.me/5511987654321" target="_blank" class="btn btn-outline-light btn-lg">
+                <i class="fab fa-whatsapp me-2"></i>
+                WhatsApp
+              </a>
+            </div>
+            <div class="mt-4">
+              <small class="text-white" style="opacity: 0.7;">
+                <i class="fas fa-lock me-1"></i>
+                Acesso administrativo? 
+                <a (click)="navegarParaLogin()">Clique aqui</a>
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scroll Indicator -->
+  <div class="scroll-indicator">
+    <i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <h2 class="section-title">Por Que Escolher a Adorela?</h2>
+      <p class="section-subtitle">Compromisso com qualidade e tradição</p>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3" *ngFor="let feature of features" data-aos="fade-up" [attr.data-aos-delay]="100">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas {{ feature.icon }}"></i>
+          </div>
+          <h4>{{ feature.titulo }}</h4>
+          <p>{{ feature.descricao }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Products Showcase Section -->
+<section class="products-showcase py-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <h2 class="section-title">Nossos Produtos em Destaque</h2>
+      <p class="section-subtitle">Feitos com amor e dedicação todos os dias</p>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-4" *ngFor="let produto of featuredProducts" data-aos="zoom-in" [attr.data-aos-delay]="100">
+        <div class="product-card">
+          <div class="product-image">
+            <i class="fas fa-cookie-bite"></i>
+          </div>
+          <div class="product-info">
+            <h4>{{ produto.nome }}</h4>
+            <p>{{ produto.descricao }}</p>
+            <div class="product-price">
+              R$ {{ produto.preco.toFixed(2) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-5" data-aos="fade-up">
+      <a href="tel:1112345678" class="btn btn-primary btn-lg me-3">
+        <i class="fas fa-phone me-2"></i>
+        Fazer Pedido por Telefone
+      </a>
+      <a href="https://wa.me/5511987654321" target="_blank" class="btn btn-success btn-lg">
+        <i class="fab fa-whatsapp me-2"></i>
+        Pedir pelo WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="about-section py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6" data-aos="fade-right">
+        <div class="about-image">
+          <i class="fas fa-store"></i>
+        </div>
+      </div>
+      <div class="col-lg-6" data-aos="fade-left">
+        <div class="about-content">
+          <h2 class="section-title">Nossa História</h2>
+          <p class="lead">
+            A Adorela nasceu do sonho de levar produtos de panificação de qualidade 
+            para toda a comunidade.
+          </p>
+          <p>
+            Há mais de 20 anos, nossa família trabalha com dedicação para oferecer 
+            o melhor em pães, bolos, tortas e confeitaria artesanal. Cada produto 
+            é feito com ingredientes selecionados e muito carinho.
+          </p>
+          <p>
+            Nosso compromisso é com a qualidade, frescor e satisfação de cada cliente. 
+            Venha nos visitar e experimentar o verdadeiro sabor da tradição!
+          </p>
+          <div class="about-stats mt-4">
+            <div class="row">
+              <div class="col-4">
+                <div class="stat-box">
+                  <h3>20+</h3>
+                  <p>Anos de Tradição</p>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-box">
+                  <h3>150+</h3>
+                  <p>Produtos</p>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-box">
+                  <h3>1000+</h3>
+                  <p>Clientes Felizes</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section py-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <h2 class="section-title">O Que Dizem Nossos Clientes</h2>
+      <p class="section-subtitle">Depoimentos reais de quem confia na Adorela</p>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-4" *ngFor="let testimonial of testimonials" data-aos="fade-up" [attr.data-aos-delay]="100">
+        <div class="testimonial-card">
+          <div class="testimonial-avatar">
+            {{ testimonial.avatar }}
+          </div>
+          <p class="testimonial-text">"{{ testimonial.comentario }}"</p>
+          <h5 class="testimonial-author">{{ testimonial.nome }}</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5">
+  <div class="container">
+    <div class="cta-box" data-aos="zoom-in">
+      <h2 class="text-white">Visite Nossa Loja Hoje!</h2>
+      <p>Experimente o melhor da panificação artesanal. Estamos esperando por você!</p>
+      <div class="cta-info mt-4">
+        <div class="row text-center">
+          <div class="col-md-4">
+            <i class="fas fa-map-marker-alt fa-2x mb-2"></i>
+            <p class="mb-0"><strong>Endereço</strong></p>
+            <p>Rua das Flores, 123 - Centro</p>
+          </div>
+          <div class="col-md-4">
+            <i class="fas fa-phone fa-2x mb-2"></i>
+            <p class="mb-0"><strong>Telefone</strong></p>
+            <p>
+              <a href="tel:1112345678" style="color: white; text-decoration: none;">
+                (11) 1234-5678
+              </a>
+            </p>
+          </div>
+          <div class="col-md-4">
+            <i class="fas fa-clock fa-2x mb-2"></i>
+            <p class="mb-0"><strong>Horário</strong></p>
+            <p>Seg-Sáb: 6h às 20h</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer-section py-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h4 class="text-white">Adorela</h4>
+        <p class="text-light">Panificadora & Confeitaria</p>
+        <p class="text-light small mb-1">© 2025 Adorela. Todos os direitos reservados.</p>
+        <p class="text-light small">
+          <a (click)="navegarParaLogin()" style="color: rgba(255,255,255,0.5); text-decoration: none; cursor: pointer; font-size: 0.8rem;">
+            <i class="fas fa-lock"></i> Área Administrativa
+          </a>
+        </p>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <div class="social-links">
+          <a href="https://facebook.com" target="_blank" class="social-link"><i class="fab fa-facebook"></i></a>
+          <a href="https://instagram.com" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
+          <a href="https://wa.me/5511987654321" target="_blank" class="social-link"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,42 +1,49 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Vaga } from '../models/vaga';
+import { Produto } from '../models/vaga';
 
 @Injectable({
   providedIn: 'root'
 })
-export class VagaService {
-  private baseUrl = 'http://localhost:8080/vagas';
+export class ProdutoService {
+  private baseUrl = 'http://localhost:8080/produtos';
 
   constructor(private http: HttpClient) { }
 
-  listar(): Observable<Vaga[]> {
-    return this.http.get<Vaga[]>(this.baseUrl);
+  listar(): Observable<Produto[]> {
+    return this.http.get<Produto[]>(this.baseUrl);
   }
 
-  buscarPorId(id: number): Observable<Vaga> {
-    return this.http.get<Vaga>(`${this.baseUrl}/${id}`);
+  buscarPorId(id: number): Observable<Produto> {
+    return this.http.get<Produto>(`${this.baseUrl}/${id}`);
   }
 
-  criar(vaga: Vaga): Observable<Vaga> {
-    return this.http.post<Vaga>(this.baseUrl, vaga);
+  criar(produto: Produto): Observable<Produto> {
+    return this.http.post<Produto>(this.baseUrl, produto);
   }
 
-  atualizar(id: number, vaga: Vaga): Observable<Vaga> {
-    return this.http.put<Vaga>(`${this.baseUrl}/${id}`, vaga);
+  atualizar(id: number, produto: Produto): Observable<Produto> {
+    return this.http.put<Produto>(`${this.baseUrl}/${id}`, produto);
   }
 
   deletar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  // Filtros personalizados (implementar conforme endpoints do back)
-  buscarPorTitulo(titulo: string): Observable<Vaga[]> {
-    return this.http.get<Vaga[]>(`${this.baseUrl}/buscar?titulo=${titulo}`);
+  // Filtros personalizados
+  buscarPorNome(nome: string): Observable<Produto[]> {
+    return this.http.get<Produto[]>(`${this.baseUrl}/buscar?nome=${nome}`);
   }
 
-  buscarPorEmpresa(empresaNome: string): Observable<Vaga[]> {
-    return this.http.get<Vaga[]>(`${this.baseUrl}/por-empresa?empresaNome=${empresaNome}`);
+  buscarPorCategoria(categoriaNome: string): Observable<Produto[]> {
+    return this.http.get<Produto[]>(`${this.baseUrl}/por-categoria?categoriaNome=${categoriaNome}`);
+  }
+
+  buscarDisponiveis(): Observable<Produto[]> {
+    return this.http.get<Produto[]>(`${this.baseUrl}/disponiveis`);
   }
 }
+
+// Export para compatibilidade com código antigo
+export { ProdutoService as VagaService };

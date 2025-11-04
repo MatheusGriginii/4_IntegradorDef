@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
   styleUrl: './candidato-form.component.scss'
 })
 export class CandidatoFormComponent implements OnInit {
-  candidato: Candidato = { nome: '' };
+  candidato: Candidato = { nome: '', email: '', telefone: '' };
   vagas: Vaga[] = [];
   vagasSelecionadas: number[] = [];
   isEdicao: boolean = false;
@@ -41,13 +41,13 @@ export class CandidatoFormComponent implements OnInit {
   carregarCandidato(id: number): void {
     this.loading = true;
     this.candidatoService.buscarPorId(id).subscribe({
-      next: (candidato) => {
+      next: (candidato: any) => {
         this.candidato = candidato;
-        this.vagasSelecionadas = candidato.vagas?.map(v => v.id) || [];
+        this.vagasSelecionadas = candidato.produtos?.map((v: any) => v.id) || [];
         this.loading = false;
       },
-      error: (erro) => {
-        Swal.fire('Erro!', erro.error || 'Erro ao carregar candidato', 'error');
+      error: (erro: any) => {
+        Swal.fire('Erro!', erro.error || 'Erro ao carregar cliente', 'error');
         this.loading = false;
       }
     });
