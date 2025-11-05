@@ -3,9 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CandidatoService } from '../../../services/candidato.service';
-import { VagaService } from '../../../services/vaga.service';
 import { Candidato } from '../../../models/candidato';
-import { Vaga } from '../../../models/vaga';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -15,16 +13,18 @@ import Swal from 'sweetalert2';
   styleUrl: './candidato-form.component.scss'
 })
 export class CandidatoFormComponent implements OnInit {
-  candidato: Candidato = { nome: '', email: '', telefone: '' };
-  vagas: Vaga[] = [];
-  vagasSelecionadas: number[] = [];
+  candidato: Candidato = { 
+    nome: '', 
+    sobrenome: '',
+    email: '', 
+    telefone: '',
+    observacoes: ''
+  };
   isEdicao: boolean = false;
   loading: boolean = false;
-  showVagasModal: boolean = false;
 
   constructor(
     private candidatoService: CandidatoService,
-    private vagaService: VagaService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -35,7 +35,6 @@ export class CandidatoFormComponent implements OnInit {
       this.isEdicao = true;
       this.carregarCandidato(+id);
     }
-    this.carregarVagas();
   }
 
   carregarCandidato(id: number): void {
@@ -43,23 +42,11 @@ export class CandidatoFormComponent implements OnInit {
     this.candidatoService.buscarPorId(id).subscribe({
       next: (candidato: any) => {
         this.candidato = candidato;
-        this.vagasSelecionadas = candidato.produtos?.map((v: any) => v.id) || [];
         this.loading = false;
       },
       error: (erro: any) => {
         Swal.fire('Erro!', erro.error || 'Erro ao carregar cliente', 'error');
         this.loading = false;
-      }
-    });
-  }
-
-  carregarVagas(): void {
-    this.vagaService.listar().subscribe({
-      next: (vagas) => {
-        this.vagas = vagas;
-      },
-      error: (erro) => {
-        console.error('Erro ao carregar vagas:', erro);
       }
     });
   }
@@ -79,40 +66,19 @@ export class CandidatoFormComponent implements OnInit {
       next: () => {
         Swal.fire(
           'Sucesso!',
-          `Candidato ${this.isEdicao ? 'atualizado' : 'criado'} com sucesso!`,
+          `Cliente ${this.isEdicao ? 'atualizado' : 'cadastrado'} com sucesso!`,
           'success'
         );
-        this.router.navigate(['/app/candidatos']);
+        this.router.navigate(['/app/clientes']);
       },
       error: (erro) => {
-        Swal.fire('Erro!', erro.error || 'Erro ao salvar candidato', 'error');
+        Swal.fire('Erro!', erro.error || 'Erro ao salvar cliente', 'error');
         this.loading = false;
       }
     });
   }
 
   cancelar(): void {
-    this.router.navigate(['/app/candidatos']);
-  }
-
-  abrirModalVagas(): void {
-    this.showVagasModal = true;
-  }
-
-  fecharModalVagas(): void {
-    this.showVagasModal = false;
-  }
-
-  toggleVaga(vagaId: number): void {
-    const index = this.vagasSelecionadas.indexOf(vagaId);
-    if (index > -1) {
-      this.vagasSelecionadas.splice(index, 1);
-    } else {
-      this.vagasSelecionadas.push(vagaId);
-    }
-  }
-
-  isVagaSelecionada(vagaId: number): boolean {
-    return this.vagasSelecionadas.includes(vagaId);
+    this.router.navigate(['/app/clientes']);
   }
 }

@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { LayoutComponent } from './components/layout/layout.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { UsuarioListComponent } from './components/usuario/usuario-list/usuario-list.component';
 import { UsuarioFormComponent } from './components/usuario/usuario-form/usuario-form.component';
 import { ClienteListComponent } from './components/candidato/candidato-list/candidato-list.component';
@@ -21,6 +22,8 @@ export const routes: Routes = [
     path: 'app',
     component: LayoutComponent,
     children: [
+      { path: 'dashboard', component: DashboardComponent },
+      
       { path: 'usuarios', component: UsuarioListComponent },
       { path: 'usuarios/novo', component: UsuarioFormComponent },
       { path: 'usuarios/editar/:id', component: UsuarioFormComponent },
@@ -46,7 +49,7 @@ export const routes: Routes = [
       { path: 'empresas', redirectTo: 'categorias', pathMatch: 'full' },
       { path: 'vagas', redirectTo: 'produtos', pathMatch: 'full' },
       
-      { path: '', redirectTo: 'produtos', pathMatch: 'full' }
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
 ];

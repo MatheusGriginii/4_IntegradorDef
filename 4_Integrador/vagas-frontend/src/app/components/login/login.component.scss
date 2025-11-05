@@ -1,23 +1,26 @@
-// Cores pastéis da padaria
-$primary-pastel: #FFE5D9;
-$accent-warm: #FFDAB9;
-$accent-butter: #FFFACD;
-$primary-dark: #8B4513;
-$secondary-dark: #D2691E;
-$bg-cream: #FFF9F0;
-$border-light: #F0E6D9;
+// Import Bodoni font
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@700;900&display=swap');
+
+// Cores ADORELA - Vermelho e Branco
+$primary-red: #C8102E;        // Vermelho intenso
+$dark-red: #8B0000;           // Vermelho escuro (dark red puro)
+$light-red: #E31837;          // Vermelho vibrante
+$white: #FFFFFF;
+$off-white: #F8F9FA;
+$gray: #6C757D;
+$dark-gray: #343A40;
 
 .login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, $primary-pastel 0%, $accent-warm 50%, $accent-butter 100%);
+  background: linear-gradient(135deg, $dark-red 0%, $primary-red 50%, $light-red 100%);
   padding: 20px;
   position: relative;
   overflow: hidden;
   
-  // Efeito de fundo com padrão
+  // Efeito de fundo com padrão elegante
   &::before {
     content: '';
     position: absolute;
@@ -25,60 +28,82 @@ $border-light: #F0E6D9;
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: 
-      radial-gradient(circle at 20% 50%, rgba(255, 218, 185, 0.3) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(255, 250, 205, 0.3) 0%, transparent 50%);
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
     pointer-events: none;
   }
 }
 
 .login-card {
-  background: white;
+  background: $white;
   padding: 3rem;
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(139, 69, 19, 0.15);
+  border-radius: 25px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
   width: 100%;
   max-width: 450px;
-  border: 3px solid $border-light;
+  border: none;
   position: relative;
   z-index: 1;
-  animation: slideIn 0.5s ease;
+  animation: slideIn 0.8s ease;
 }
 
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(40px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
-.card-header {
+.login-header {
   margin-bottom: 2.5rem;
   
   .bakery-icon {
     i {
-      color: $primary-dark;
-      text-shadow: 2px 2px 4px rgba(139, 69, 19, 0.2);
+      color: $primary-red;
+      text-shadow: 0 4px 12px rgba(200, 16, 46, 0.3);
+      animation: pulse 2s infinite;
     }
   }
   
   h2 {
-    font-family: 'Playfair Display', serif;
-    color: $primary-dark;
+    font-family: 'Bodoni Moda', serif;
+    color: $dark-red;
     margin-bottom: 0.5rem;
-    font-size: 2rem;
-    font-weight: 700;
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-muted {
+    color: $gray !important;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
   }
   
   .tagline {
-    color: $secondary-dark;
+    color: $primary-red;
     font-style: italic;
-    font-size: 0.95rem;
+    font-size: 1rem;
     margin-top: 0.5rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
   }
 }
 
@@ -88,64 +113,81 @@ $border-light: #F0E6D9;
 
 .form-label {
   display: block;
-  margin-bottom: 0.5rem;
-  color: $primary-dark;
-  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: $dark-red;
+  font-weight: 700;
   font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.5px;
+  font-size: 0.95rem;
+  
+  i {
+    color: $primary-red;
+    margin-right: 0.5rem;
+  }
 }
 
 .form-control {
   width: 100%;
-  padding: 0.9rem 1.2rem;
-  border: 2px solid $border-light;
-  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  border: 2px solid rgba(200, 16, 46, 0.2);
+  border-radius: 15px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  background-color: $bg-cream;
+  background-color: $off-white;
+  font-weight: 500;
   
   &:focus {
     outline: none;
-    border-color: $primary-dark;
-    box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
-    background-color: white;
+    border-color: $primary-red;
+    box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.15);
+    background-color: $white;
+    transform: translateY(-2px);
   }
   
   &::placeholder {
-    color: #999;
+    color: $gray;
+    font-weight: 400;
   }
 }
 
 .btn {
-  padding: 1rem 1.5rem;
+  padding: 1.25rem 1.5rem;
   border: none;
-  border-radius: 12px;
+  border-radius: 50px;
   font-size: 1.05rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-weight: 600;
+  font-weight: 700;
   font-family: 'Poppins', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, $primary-dark 0%, $secondary-dark 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+  background: linear-gradient(135deg, $primary-red 0%, $dark-red 100%);
+  color: $white;
+  box-shadow: 0 8px 20px rgba(200, 16, 46, 0.4);
   
   &:hover:not(:disabled) {
-    background: linear-gradient(135deg, #5d2f0e 0%, #784b22 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(139, 69, 19, 0.4);
+    background: linear-gradient(135deg, $dark-red 0%, $primary-red 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(200, 16, 46, 0.5);
   }
   
   &:active:not(:disabled) {
-    transform: translateY(0);
+    transform: translateY(-1px);
+  }
+  
+  i {
+    margin-right: 0.75rem;
   }
 }
 
 .btn:disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed;
   transform: none !important;
+  box-shadow: 0 4px 12px rgba(200, 16, 46, 0.2) !important;
 }
 
 .w-100 {
@@ -156,25 +198,42 @@ $border-light: #F0E6D9;
   text-align: center;
 }
 
-.text-muted {
-  color: #757575;
-}
-
 .mb-3 {
   margin-bottom: 1rem;
 }
 
 .mt-3 {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  
+  small {
+    color: $gray !important;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    
+    i {
+      color: $primary-red;
+      margin-right: 0.5rem;
+    }
+  }
 }
 
 // Responsividade
 @media (max-width: 480px) {
   .login-card {
     padding: 2rem 1.5rem;
+    border-radius: 20px;
   }
   
-  .card-header h2 {
-    font-size: 1.6rem;
+  .login-header h2 {
+    font-size: 2rem;
+    letter-spacing: 2px;
+  }
+  
+  .form-control {
+    padding: 0.9rem 1rem;
+  }
+  
+  .btn-primary {
+    padding: 1rem 1.25rem;
   }
 }

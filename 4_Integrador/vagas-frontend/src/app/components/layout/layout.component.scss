@@ -1,10 +1,63 @@
+// Variáveis de cores - Vermelho e Branco (mesmas da home)
+$primary-red: #C8102E;        // Vermelho intenso
+$dark-red: #8B0000;           // Vermelho escuro (dark red puro)
+$light-red: #E31837;          // Vermelho vibrante
+$white: #FFFFFF;
+$off-white: #F8F9FA;
+$gray: #6C757D;
+$dark-gray: #343A40;
+
 .main-content {
-  margin-top: 76px; /* Altura da navbar fixa */
-  min-height: calc(100vh - 76px);
-  padding: 20px 0;
-  background-color: #f8f9fa;
+  min-height: calc(100vh - 80px);
+  padding: 30px 0;
+  background: linear-gradient(135deg, $off-white 0%, #FFFFFF 50%, $off-white 100%);
+  
+  // Efeito de overlay sutil
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 10% 20%, rgba(200, 16, 46, 0.02) 0%, transparent 50%),
+      radial-gradient(circle at 90% 80%, rgba(200, 16, 46, 0.02) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
 }
 
 .container-fluid {
-  padding: 0 20px;
+  padding: 0 30px;
+  position: relative;
+  z-index: 1;
+  
+  // Animação suave para o conteúdo
+  animation: fadeInUp 0.6s ease-out;
+}
+
+// Animação de entrada
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .main-content {
+    padding: 20px 0;
+  }
+  
+  .container-fluid {
+    padding: 0 15px;
+  }
 }

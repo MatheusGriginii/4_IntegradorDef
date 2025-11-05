@@ -1,1 +1,324 @@
-// Dashboard styles
+// Import Bodoni font
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@700;900&display=swap');
+
+// Variáveis de cores - Vermelho e Branco (mesmas da home)
+$primary-red: #C8102E;        // Vermelho intenso
+$dark-red: #8B0000;           // Vermelho escuro (dark red puro)
+$light-red: #E31837;          // Vermelho vibrante
+$white: #FFFFFF;
+$off-white: #F8F9FA;
+$gray: #6C757D;
+$dark-gray: #343A40;
+
+// Container principal
+.container {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+// Header da página
+.page-header {
+  background: linear-gradient(135deg, $dark-red 0%, $primary-red 50%, $light-red 100%);
+  color: $white;
+  padding: 3rem 2rem;
+  border-radius: 20px;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  
+  h1 {
+    font-family: 'Bodoni Moda', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: $white !important;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+    
+    i {
+      color: $white;
+      margin-right: 1rem;
+    }
+  }
+  
+  .lead {
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-weight: 400;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.9);
+    position: relative;
+    z-index: 2;
+    font-size: 1.2rem;
+  }
+}
+
+// Cards de estatísticas
+.card {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(220, 20, 60, 0.3);
+  }
+  
+  .card-body {
+    padding: 2rem;
+    text-align: center;
+    
+    .icon-product {
+      color: $primary-red;
+    }
+    
+    .icon-category {
+      color: $dark-red;
+    }
+    
+    .icon-client {
+      color: $light-red;
+    }
+    
+    .icon-order {
+      color: $primary-red;
+    }
+    
+    h3 {
+      font-family: 'Bodoni Moda', serif;
+      font-size: 2.5rem;
+      color: $dark-red;
+      font-weight: 900;
+      margin: 1rem 0 0.5rem;
+    }
+    
+    p {
+      color: $gray;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+  }
+  
+  .card-header {
+    background: linear-gradient(135deg, $primary-red, $light-red);
+    color: $white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    border: none;
+    padding: 1rem 1.5rem;
+    
+    i {
+      color: $white;
+    }
+  }
+}
+
+// Produtos em destaque
+.product-card {
+  background: $white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  height: 100%;
+  
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(220, 20, 60, 0.3);
+  }
+  
+  .product-image {
+    height: 180px;
+    background: linear-gradient(135deg, $light-red, $primary-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    i {
+      font-size: 4rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+  }
+  
+  .product-info {
+    padding: 1.5rem;
+    
+    .product-name {
+      font-family: 'Bodoni Moda', serif;
+      font-size: 1.3rem;
+      color: $dark-red;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    p {
+      color: $gray;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+    
+    .product-price {
+      font-size: 1.4rem;
+      color: $primary-red;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    
+    .badge {
+      &.badge-success {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: $white;
+        padding: 0.5rem 1rem;
+        border-radius: 15px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+    }
+  }
+}
+
+// Botões
+.btn {
+  border-radius: 50px;
+  padding: 12px 32px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  border: none;
+  
+  &.btn-primary {
+    background: linear-gradient(135deg, $primary-red, $dark-red);
+    color: $white;
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(220, 20, 60, 0.4);
+      color: $white;
+    }
+  }
+  
+  &.btn-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: $white;
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+      color: $white;
+    }
+  }
+  
+  &.btn-info {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: $white;
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(23, 162, 184, 0.4);
+      color: $white;
+    }
+  }
+  
+  i {
+    margin-right: 0.5rem;
+  }
+}
+
+// Footer
+.text-center {
+  .text-muted {
+    color: $gray !important;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    
+    i {
+      color: $primary-red !important;
+    }
+  }
+}
+
+// Animações
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+// Seções
+.row {
+  margin-bottom: 1rem;
+  
+  .col-md-3, .col-md-4, .col-md-6 {
+    margin-bottom: 1.5rem;
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .page-header {
+    padding: 2rem 1rem;
+    
+    h1 {
+      font-size: 2rem;
+      letter-spacing: 1px;
+    }
+    
+    .lead {
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+  }
+  
+  .card .card-body {
+    padding: 1.5rem;
+    
+    h3 {
+      font-size: 2rem;
+    }
+  }
+}
+
+// Melhorias visuais adicionais
+.container {
+  .mb-5:last-child {
+    margin-bottom: 3rem !important;
+  }
+}
+
+// Texto com gradiente para títulos especiais
+.gradient-text {
+  background: linear-gradient(135deg, $primary-red, $light-red);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

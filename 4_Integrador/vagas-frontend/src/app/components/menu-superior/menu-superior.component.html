@@ -1,8 +1,9 @@
 <nav class="navbar navbar-expand-lg fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/app">
-      <i class="fas fa-bread-slice me-2"></i>
-      Padaria Monte Líbano
+    <a class="navbar-brand" routerLink="/app/dashboard">
+      <i class="fas fa-crown me-2"></i>
+      <span class="brand-name">ADORELA</span>
+      <span class="brand-subtitle">Admin</span>
     </a>
     
     <button 
@@ -16,6 +17,12 @@
     
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/app/dashboard" routerLinkActive="active">
+            <i class="fas fa-tachometer-alt me-1"></i>
+            Dashboard
+          </a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="/app/usuarios" routerLinkActive="active">
             <i class="fas fa-users me-1"></i>
@@ -38,12 +45,6 @@
           <a class="nav-link" routerLink="/app/produtos" routerLinkActive="active">
             <i class="fas fa-cookie-bite me-1"></i>
             Produtos
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/app/pedidos" routerLinkActive="active">
-            <i class="fas fa-shopping-cart me-1"></i>
-            Pedidos
           </a>
         </li>
         <li class="nav-item">

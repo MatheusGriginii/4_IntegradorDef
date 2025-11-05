@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 
 import { Usuario } from '../../../models/usuario';
-import { Endereco } from '../../../models/endereco';
 import { UsuarioService } from '../../../services/usuario.service';
 
 @Component({
@@ -20,21 +19,18 @@ export class UsuarioFormComponent implements OnInit {
   usuario: Usuario = {
     nome: '',
     email: '',
-    endereco: {
-      cep: '',
-      rua: '',
-      numero: '',
-      cidade: '',
-      estado: '',
-      uf: '',
-      complemento: ''
-    },
-    produtos: []
+    perfil: 'FUNCIONARIO',
+    ativo: true
   };
 
   isEdicao = false;
   salvando = false;
   usuarioId?: number;
+
+  perfilOptions = [
+    { value: 'ADMINISTRADOR', label: 'Administrador' },
+    { value: 'FUNCIONARIO', label: 'Funcionário' }
+  ];
 
   constructor(
     private usuarioService: UsuarioService,
@@ -57,18 +53,6 @@ export class UsuarioFormComponent implements OnInit {
     this.usuarioService.buscarPorId(this.usuarioId).subscribe({
       next: (usuario) => {
         this.usuario = { ...usuario };
-        // Garantir que o endereço existe
-        if (!this.usuario.endereco) {
-          this.usuario.endereco = {
-            cep: '',
-            rua: '',
-            numero: '',
-            cidade: '',
-            estado: '',
-            uf: '',
-            complemento: ''
-          };
-        }
       },
       error: (error: any) => {
         console.error('Erro ao carregar usuário:', error);
@@ -86,6 +70,17 @@ export class UsuarioFormComponent implements OnInit {
 
   salvar(): void {
     if (this.salvando) return;
+
+    // Validação básica
+    if (!this.usuario.nome || !this.usuario.email) {
+      Swal.fire({
+        title: 'Atenção!',
+        text: 'Nome e email são obrigatórios.',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
 
     this.salvando = true;
 
@@ -112,6 +107,47 @@ export class UsuarioFormComponent implements OnInit {
           text: `Não foi possível ${this.isEdicao ? 'atualizar' : 'criar'} o usuário.`,
           icon: 'error',
           confirmButtonText: 'OK'
+        });
+      }
+    });
+  }
+
+  alterarStatus(): void {
+    if (!this.usuarioId) return;
+
+    const novoStatus = !this.usuario.ativo;
+    const texto = novoStatus ? 'ativar' : 'desativar';
+
+    Swal.fire({
+      title: 'Confirmar Alteração',
+      text: `Deseja realmente ${texto} o usuário "${this.usuario.nome}"?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: `Sim, ${texto}!`,
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.usuarioService.alterarStatus(this.usuarioId!, novoStatus).subscribe({
+          next: (usuario) => {
+            this.usuario.ativo = usuario.ativo;
+            Swal.fire({
+              title: 'Sucesso!',
+              text: `Usuário ${novoStatus ? 'ativado' : 'desativado'} com sucesso.`,
+              icon: 'success',
+              confirmButtonText: 'OK'
+            });
+          },
+          error: (error: any) => {
+            console.error('Erro ao alterar status:', error);
+            Swal.fire({
+              title: 'Erro!',
+              text: `Não foi possível ${texto} o usuário.`,
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+          }
         });
       }
     });

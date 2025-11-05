@@ -12,10 +12,10 @@
     </parent>
 
     <groupId>app.projeto</groupId>
-    <artifactId>api-app</artifactId>
+    <artifactId>adorela-api</artifactId>
     <version>1.0.0</version>
-    <name>api-app</name>
-    <description>API RESTful de vagas/candidatos</description>
+    <name>adorela-api</name>
+    <description>API RESTful da Panificadora ADORELA</description>
 
     <properties>
         <java.version>17</java.version>
@@ -33,6 +33,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- spring security para autenticação -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <!-- spring data jpa -->

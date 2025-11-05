@@ -19,7 +19,7 @@ export class UsuarioListComponent implements OnInit {
   
   filtros = {
     nome: '',
-    cidade: ''
+    perfil: ''
   };
 
   constructor(private usuarioService: UsuarioService) {}
@@ -64,16 +64,16 @@ export class UsuarioListComponent implements OnInit {
     this.usuariosFiltrados = this.usuarios.filter(usuario => {
       const nomeMatch = !this.filtros.nome || 
         usuario.nome.toLowerCase().includes(this.filtros.nome.toLowerCase());
-      const cidadeMatch = !this.filtros.cidade || 
-        usuario.endereco?.cidade?.toLowerCase().includes(this.filtros.cidade.toLowerCase());
+      const perfilMatch = !this.filtros.perfil || 
+        usuario.perfil === this.filtros.perfil;
       
-      return nomeMatch && cidadeMatch;
+      return nomeMatch && perfilMatch;
     });
   }
 
   limparFiltros() {
     this.filtros.nome = '';
-    this.filtros.cidade = '';
+    this.filtros.perfil = '';
     this.usuariosFiltrados = this.usuarios;
   }
 
@@ -116,12 +116,80 @@ export class UsuarioListComponent implements OnInit {
     });
   }
 
-  gerenciarVagas(usuario: Usuario) {
-    // TODO: Implementar modal para gerenciar vagas do usuário
+  alterarStatus(usuario: Usuario) {
+    const novoStatus = !usuario.ativo;
+    const acao = novoStatus ? 'ativar' : 'desativar';
+    
     Swal.fire({
-      title: 'Em desenvolvimento',
-      text: 'Funcionalidade de gerenciar vagas será implementada em breve',
-      icon: 'info'
+      title: 'Confirmação',
+      text: `Deseja realmente ${acao} o usuário "${usuario.nome}"?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: `Sim, ${acao}`,
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed && usuario.id) {
+        this.usuarioService.alterarStatus(usuario.id, novoStatus).subscribe({
+          next: () => {
+            Swal.fire({
+              title: 'Sucesso!',
+              text: `Usuário ${acao}do com sucesso!`,
+              icon: 'success',
+              timer: 1500,
+              showConfirmButton: false
+            });
+            this.carregarUsuarios();
+          },
+          error: (error: any) => {
+            console.error('Erro ao alterar status:', error);
+            Swal.fire({
+              title: 'Erro!',
+              text: `Erro ao ${acao} usuário`,
+              icon: 'error'
+            });
+          }
+        });
+      }
+    });
+  }
+
+  alterarSenha(usuario: Usuario) {
+    Swal.fire({
+      title: 'Alterar Senha',
+      text: `Digite a nova senha para ${usuario.nome}:`,
+      input: 'password',
+      inputPlaceholder: 'Nova senha (mínimo 6 caracteres)',
+      showCancelButton: true,
+      confirmButtonText: 'Alterar',
+      cancelButtonText: 'Cancelar',
+      inputValidator: (value) => {
+        if (!value || value.length < 6) {
+          return 'A senha deve ter no mínimo 6 caracteres!';
+        }
+        return null;
+      }
+    }).then((result) => {
+      if (result.isConfirmed && usuario.id) {
+        this.usuarioService.alterarSenha(usuario.id, result.value).subscribe({
+          next: () => {
+            Swal.fire({
+              title: 'Sucesso!',
+              text: 'Senha alterada com sucesso!',
+              icon: 'success',
+              timer: 1500,
+              showConfirmButton: false
+            });
+          },
+          error: (error: any) => {
+            console.error('Erro ao alterar senha:', error);
+            Swal.fire({
+              title: 'Erro!',
+              text: 'Erro ao alterar senha',
+              icon: 'error'
+            });
+          }
+        });
+      }
     });
   }
 }

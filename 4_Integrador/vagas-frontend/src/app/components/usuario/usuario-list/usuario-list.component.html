@@ -25,15 +25,18 @@
         >
       </div>
       <div class="col-md-4">
-        <label for="filtroCidade" class="form-label">Filtrar por cidade:</label>
-        <input 
-          type="text" 
-          id="filtroCidade"
-          class="form-control" 
-          [(ngModel)]="filtros.cidade"
-          (input)="filtrarUsuarios()"
-          placeholder="Digite a cidade..."
+        <label for="filtroPerfil" class="form-label">Filtrar por perfil:</label>
+        <select 
+          id="filtroPerfil"
+          class="form-select" 
+          [(ngModel)]="filtros.perfil"
+          (change)="filtrarUsuarios()"
         >
+          <option value="">Todos os perfis</option>
+          <option value="ADMIN">Administrador</option>
+          <option value="GERENTE">Gerente</option>
+          <option value="FUNCIONARIO">Funcionário</option>
+        </select>
       </div>
       <div class="col-md-4 d-flex align-items-end">
         <button class="btn btn-secondary" (click)="limparFiltros()">
@@ -60,10 +63,10 @@
             <tr>
               <th>ID</th>
               <th>Nome</th>
-              <th>Endereço</th>
-              <th>Cidade</th>
-              <th>Estado</th>
-              <th>Vagas</th>
+              <th>Email</th>
+              <th>Perfil</th>
+              <th>Status</th>
+              <th>Data Criação</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -72,14 +75,24 @@
               <tr>
                 <td>{{ usuario.id }}</td>
                 <td>{{ usuario.nome }}</td>
-                <td>{{ usuario.endereco.rua }}</td>
-                <td>{{ usuario.endereco.cidade }}</td>
-                <td>{{ usuario.endereco.estado }}</td>
+                <td>{{ usuario.email }}</td>
                 <td>
-                  <span class="badge bg-info">
-                    {{ usuario.produtos?.length || 0 }} produto(s)
+                  <span class="badge" 
+                        [ngClass]="{
+                          'bg-danger': usuario.perfil === 'ADMIN',
+                          'bg-warning': usuario.perfil === 'GERENTE',
+                          'bg-info': usuario.perfil === 'FUNCIONARIO'
+                        }">
+                    {{ usuario.perfil === 'ADMIN' ? 'Administrador' : 
+                       usuario.perfil === 'GERENTE' ? 'Gerente' : 'Funcionário' }}
                   </span>
                 </td>
+                <td>
+                  <span class="badge" [ngClass]="usuario.ativo ? 'bg-success' : 'bg-secondary'">
+                    {{ usuario.ativo ? 'Ativo' : 'Inativo' }}
+                  </span>
+                </td>
+                <td>{{ usuario.dataCriacao | date:'dd/MM/yyyy' }}</td>
                 <td>
                   <div class="btn-group btn-group-sm" role="group">
                     <button 
@@ -90,18 +103,25 @@
                       <i class="fas fa-edit"></i>
                     </button>
                     <button 
+                      class="btn btn-outline-warning" 
+                      (click)="alterarStatus(usuario)"
+                      [title]="usuario.ativo ? 'Desativar' : 'Ativar'"
+                    >
+                      <i class="fas" [ngClass]="usuario.ativo ? 'fa-ban' : 'fa-check'"></i>
+                    </button>
+                    <button 
+                      class="btn btn-outline-info" 
+                      (click)="alterarSenha(usuario)"
+                      title="Alterar Senha"
+                    >
+                      <i class="fas fa-key"></i>
+                    </button>
+                    <button 
                       class="btn btn-outline-danger" 
                       (click)="confirmarExclusao(usuario)"
                       title="Excluir"
                     >
                       <i class="fas fa-trash"></i>
-                    </button>
-                    <button 
-                      class="btn btn-outline-info" 
-                      (click)="gerenciarVagas(usuario)"
-                      title="Gerenciar Vagas"
-                    >
-                      <i class="fas fa-briefcase"></i>
                     </button>
                   </div>
                 </td>
