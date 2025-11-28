@@ -1,0 +1,129 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-bread-slice me-2"></i>
+            {{ isEdicao ? 'Editar Produto' : 'Novo Produto' }}
+          </h5>
+        </div>
+        
+        <div class="card-body">
+          <form #produtoForm="ngForm" (ngSubmit)="salvar()">
+            <div class="row">
+              <div class="col-md-6">
+                <label class="form-label">Nome do Produto *</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  [(ngModel)]="produto.nome"
+                  name="nome"
+                  required
+                  minlength="2"
+                  placeholder="Ex: Pão Francês, Bolo de Chocolate">
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label">Categoria *</label>
+                <select 
+                  class="form-select" 
+                  [ngModel]="produto.categoria?.id"
+                  (ngModelChange)="onCategoriaChange($event)"
+                  name="categoria"
+                  required>
+                  <option value="">Selecione uma categoria</option>
+                  <option *ngFor="let categoria of categorias" [value]="categoria.id">
+                    {{ categoria.nome }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <label class="form-label">Preço (R$) *</label>
+                <input 
+                  type="number" 
+                  class="form-control" 
+                  [(ngModel)]="produto.preco"
+                  name="preco"
+                  required
+                  placeholder="0.00"
+                  step="0.01"
+                  min="0">
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label">Estoque</label>
+                <input 
+                  type="number" 
+                  class="form-control" 
+                  [(ngModel)]="produto.estoque"
+                  name="estoque"
+                  placeholder="Quantidade em estoque"
+                  min="0">
+              </div>
+            </div>
+            
+            <div class="row mt-3">
+              <div class="col-md-12">
+                <label class="form-label">Descrição</label>
+                <textarea 
+                  class="form-control" 
+                  [(ngModel)]="produto.descricao"
+                  name="descricao"
+                  rows="3"
+                  placeholder="Descreva o produto..."></textarea>
+              </div>
+            </div>
+            
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <label class="form-label">URL da Imagem</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  [(ngModel)]="produto.imagemUrl"
+                  name="imagemUrl"
+                  placeholder="https://exemplo.com/imagem.jpg">
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-check mt-4">
+                  <input 
+                    class="form-check-input" 
+                    type="checkbox"
+                    [(ngModel)]="produto.disponivel"
+                    name="disponivel"
+                    id="disponivel">
+                  <label class="form-check-label" for="disponivel">
+                    Produto Disponível
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row mt-4">
+              <div class="col-12">
+                <button 
+                  type="submit" 
+                  class="btn btn-primary me-2">
+                  <i class="fas fa-save me-1"></i>
+                  {{ isEdicao ? 'Atualizar' : 'Cadastrar' }}
+                </button>
+                <button 
+                  type="button" 
+                  class="btn btn-secondary" 
+                  (click)="voltar()">
+                  <i class="fas fa-arrow-left me-1"></i>
+                  Voltar
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

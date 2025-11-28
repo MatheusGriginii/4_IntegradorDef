@@ -1,0 +1,176 @@
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-shopping-cart me-2"></i>Pedidos</h2>
+    <button class="btn btn-primary" routerLink="/app/pedidos/novo">
+      <i class="fas fa-plus me-2"></i>Novo Pedido
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="btn-group" role="group">
+        <button 
+          type="button" 
+          class="btn"
+          [ngClass]="filtroStatus === 'TODOS' ? 'btn-dark' : 'btn-outline-dark'"
+          (click)="mudarFiltro('TODOS')">
+          Todos
+        </button>
+        <button 
+          type="button" 
+          class="btn"
+          [ngClass]="filtroStatus === 'PENDENTE' ? 'btn-warning' : 'btn-outline-warning'"
+          (click)="mudarFiltro('PENDENTE')">
+          Pendentes
+        </button>
+        <button 
+          type="button" 
+          class="btn"
+          [ngClass]="filtroStatus === 'CONFIRMADO' ? 'btn-info' : 'btn-outline-info'"
+          (click)="mudarFiltro('CONFIRMADO')">
+          Confirmados
+        </button>
+        <button 
+          type="button" 
+          class="btn"
+          [ngClass]="filtroStatus === 'PREPARANDO' ? 'btn-primary' : 'btn-outline-primary'"
+          (click)="mudarFiltro('PREPARANDO')">
+          Em Preparo
+        </button>
+        <button 
+          type="button" 
+          class="btn"
+          [ngClass]="filtroStatus === 'PRONTO' ? 'btn-success' : 'btn-outline-success'"
+          (click)="mudarFiltro('PRONTO')">
+          Prontos
+        </button>
+        <button 
+          type="button" 
+          class="btn"
+          [ngClass]="filtroStatus === 'ENTREGUE' ? 'btn-secondary' : 'btn-outline-secondary'"
+          (click)="mudarFiltro('ENTREGUE')">
+          Entregues
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carregando -->
+  <div *ngIf="carregando" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+  </div>
+
+  <!-- Lista de Pedidos -->
+  <div *ngIf="!carregando" class="row">
+    <div class="col-12" *ngIf="pedidosFiltrados.length === 0">
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        Nenhum pedido encontrado.
+      </div>
+    </div>
+
+    <div class="col-12" *ngFor="let pedido of pedidosFiltrados">
+      <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <div>
+            <strong>Pedido #{{ pedido.id }}</strong>
+            <span class="ms-3" [ngClass]="getStatusClass(pedido.status)">
+              {{ getStatusDescricao(pedido.status) }}
+            </span>
+            <span class="ms-2 badge bg-light text-dark">
+              {{ getTipoPedidoDescricao(pedido.tipoPedido) }}
+            </span>
+          </div>
+          <div>
+            <small class="text-muted">
+              {{ formatarData(pedido.dataPedido) }}
+            </small>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <p class="mb-1">
+                <strong>Cliente:</strong> {{ pedido.cliente?.nome || 'N/A' }}
+              </p>
+              <p class="mb-1" *ngIf="pedido.telefoneContato">
+                <strong>Telefone:</strong> {{ pedido.telefoneContato }}
+              </p>
+              <p class="mb-1" *ngIf="pedido.enderecoEntrega">
+                <strong>Endereço:</strong> {{ pedido.enderecoEntrega }}
+              </p>
+            </div>
+            <div class="col-md-6 text-md-end">
+              <p class="mb-1">
+                <strong>Valor Total:</strong> {{ formatarValor(pedido.valorTotal) }}
+              </p>
+              <p class="mb-1" *ngIf="pedido.valorDesconto && pedido.valorDesconto > 0">
+                <strong>Desconto:</strong> {{ formatarValor(pedido.valorDesconto) }}
+              </p>
+              <p class="mb-1">
+                <strong class="text-primary">Valor Final:</strong> 
+                <span class="text-primary fs-5">{{ formatarValor(pedido.valorFinal) }}</span>
+              </p>
+            </div>
+          </div>
+          <div class="mt-2" *ngIf="pedido.observacoes">
+            <strong>Observações:</strong> {{ pedido.observacoes }}
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="btn-group btn-group-sm" role="group">
+            <button 
+              class="btn btn-outline-primary" 
+              [routerLink]="['/app/pedidos/detalhes', pedido.id]"
+              title="Ver detalhes">
+              <i class="fas fa-eye"></i>
+            </button>
+            
+            <button 
+              *ngIf="pedido.status === 'PENDENTE'"
+              class="btn btn-outline-success" 
+              (click)="confirmarPedido(pedido.id)"
+              title="Confirmar">
+              <i class="fas fa-check"></i>
+            </button>
+            
+            <button 
+              *ngIf="pedido.status === 'CONFIRMADO'"
+              class="btn btn-outline-info" 
+              (click)="atualizarStatus(pedido.id, StatusPedido.PREPARANDO)"
+              title="Iniciar preparo">
+              <i class="fas fa-fire"></i>
+            </button>
+            
+            <button 
+              *ngIf="pedido.status === 'PREPARANDO'"
+              class="btn btn-outline-warning" 
+              (click)="atualizarStatus(pedido.id, StatusPedido.PRONTO)"
+              title="Marcar como pronto">
+              <i class="fas fa-bell"></i>
+            </button>
+            
+            <button 
+              *ngIf="pedido.status === 'PRONTO'"
+              class="btn btn-outline-success" 
+              (click)="marcarComoEntregue(pedido.id)"
+              title="Marcar como entregue">
+              <i class="fas fa-truck"></i>
+            </button>
+            
+            <button 
+              *ngIf="pedido.status === 'PENDENTE' || pedido.status === 'CONFIRMADO'"
+              class="btn btn-outline-danger" 
+              (click)="cancelarPedido(pedido.id)"
+              title="Cancelar">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

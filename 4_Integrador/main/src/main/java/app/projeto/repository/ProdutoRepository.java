@@ -36,6 +36,12 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     
     Page<Produto> findByNomeContainingIgnoreCaseAndAtivoTrue(String nome, Pageable pageable);
     
+    // Buscar por nome (qualquer produto, ativo ou inativo)
+    List<Produto> findByNomeContainingIgnoreCase(String nome);
+    
+    // Buscar por categoria ID (qualquer produto, ativo ou inativo)
+    List<Produto> findByCategoriaId(Long categoriaId);
+    
     // Buscar por faixa de preço
     @Query("SELECT p FROM Produto p WHERE p.preco BETWEEN :precoMin AND :precoMax AND p.ativo = true")
     List<Produto> findByPrecoRange(@Param("precoMin") BigDecimal precoMin, 

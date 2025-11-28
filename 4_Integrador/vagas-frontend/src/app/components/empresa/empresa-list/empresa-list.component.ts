@@ -37,7 +37,20 @@ export class CategoriaListComponent implements OnInit {
         this.loading = false;
       },
       error: (erro: any) => {
-        Swal.fire('Erro!', erro.error || 'Erro ao carregar categorias', 'error');
+        console.error('Erro ao carregar categorias:', erro);
+        let mensagem = 'Erro ao carregar categorias';
+        
+        if (erro.error) {
+          if (erro.error.error && typeof erro.error.error === 'string') {
+            mensagem = erro.error.error;
+          } else if (erro.error.mensagem) {
+            mensagem = erro.error.mensagem;
+          } else if (typeof erro.error === 'string') {
+            mensagem = erro.error;
+          }
+        }
+        
+        Swal.fire('Erro!', mensagem, 'error');
         this.loading = false;
       }
     });
@@ -46,13 +59,26 @@ export class CategoriaListComponent implements OnInit {
   buscarPorNome(): void {
     if (this.filtroNome.trim()) {
       this.loading = true;
-      this.categoriaService.buscarPorNome(this.filtroNome).subscribe({
+      this.categoriaService.buscarPorNomeContendo(this.filtroNome).subscribe({
         next: (categorias: Categoria[]) => {
           this.categoriasFiltradas = categorias;
           this.loading = false;
         },
         error: (erro: any) => {
-          Swal.fire('Erro!', erro.error || 'Erro ao buscar categorias', 'error');
+          console.error('Erro ao buscar categorias:', erro);
+          let mensagem = 'Erro ao buscar categorias';
+          
+          if (erro.error) {
+            if (erro.error.error && typeof erro.error.error === 'string') {
+              mensagem = erro.error.error;
+            } else if (erro.error.mensagem) {
+              mensagem = erro.error.mensagem;
+            } else if (typeof erro.error === 'string') {
+              mensagem = erro.error;
+            }
+          }
+          
+          Swal.fire('Erro!', mensagem, 'error');
           this.loading = false;
         }
       });
@@ -87,7 +113,20 @@ export class CategoriaListComponent implements OnInit {
             this.carregarCategorias();
           },
           error: (erro: any) => {
-            Swal.fire('Erro!', erro.error || 'Erro ao excluir categoria', 'error');
+            console.error('Erro ao excluir categoria:', erro);
+            let mensagem = 'Erro ao excluir categoria';
+            
+            if (erro.error) {
+              if (erro.error.error && typeof erro.error.error === 'string') {
+                mensagem = erro.error.error;
+              } else if (erro.error.mensagem) {
+                mensagem = erro.error.mensagem;
+              } else if (typeof erro.error === 'string') {
+                mensagem = erro.error;
+              }
+            }
+            
+            Swal.fire('Erro!', mensagem, 'error');
           }
         });
       }

@@ -84,27 +84,57 @@ export class UsuarioFormComponent implements OnInit {
 
     this.salvando = true;
 
+    // Se for criação (não edição), adiciona senha padrão
+    if (!this.isEdicao && !this.usuario.senha) {
+      this.usuario.senha = '123456'; // Senha padrão
+    }
+
     const operacao = this.isEdicao 
       ? this.usuarioService.atualizar(this.usuarioId!, this.usuario)
       : this.usuarioService.criar(this.usuario);
 
     operacao.subscribe({
       next: (usuario) => {
+        const mensagem = this.isEdicao 
+          ? 'Usuário atualizado com sucesso!' 
+          : 'Usuário criado com sucesso! Senha padrão: 123456';
+        
         Swal.fire({
           title: 'Sucesso!',
-          text: `Usuário ${this.isEdicao ? 'atualizado' : 'criado'} com sucesso!`,
+          text: mensagem,
           icon: 'success',
           confirmButtonText: 'OK'
         }).then(() => {
           this.router.navigate(['/app/usuarios']);
         });
       },
-      error: (error: any) => {
-        console.error('Erro ao salvar usuário:', error);
+      error: (erro: any) => {
+        console.error('Erro ao salvar usuário:', erro);
         this.salvando = false;
+        
+        let mensagem = `Não foi possível ${this.isEdicao ? 'atualizar' : 'criar'} o usuário.`;
+        
+        if (erro.error) {
+          if (erro.error.fields) {
+            // Erros de validação de campos
+            mensagem = 'Erros de validação:\n';
+            for (const campo in erro.error.fields) {
+              mensagem += `- ${campo}: ${erro.error.fields[campo]}\n`;
+            }
+          } else if (erro.error.erro && typeof erro.error.erro === 'string') {
+            mensagem = erro.error.erro;
+          } else if (erro.error.error && typeof erro.error.error === 'string') {
+            mensagem = erro.error.error;
+          } else if (erro.error.mensagem) {
+            mensagem = erro.error.mensagem;
+          } else if (typeof erro.error === 'string') {
+            mensagem = erro.error;
+          }
+        }
+        
         Swal.fire({
           title: 'Erro!',
-          text: `Não foi possível ${this.isEdicao ? 'atualizar' : 'criar'} o usuário.`,
+          text: mensagem,
           icon: 'error',
           confirmButtonText: 'OK'
         });

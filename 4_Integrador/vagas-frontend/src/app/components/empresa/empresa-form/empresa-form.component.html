@@ -1,1 +1,115 @@
+<div class="container-fluid mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h3>{{ modoEdicao ? 'Editar Categoria' : 'Nova Categoria' }}</h3>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="salvar()" #categoriaForm="ngForm">
+        <div class="row">
+          <!-- Nome -->
+          <div class="col-md-6 mb-3">
+            <label for="nome" class="form-label">Nome <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control" 
+              [class.is-invalid]="nome.invalid && nome.touched"
+              id="nome"
+              name="nome"
+              [(ngModel)]="categoria.nome"
+              #nome="ngModel"
+              required
+              minlength="2"
+              maxlength="50"
+              placeholder="Ex: Pães, Bolos, Doces...">
+            <div class="invalid-feedback" *ngIf="nome.invalid && nome.touched">
+              <span *ngIf="nome.errors?.['required']">Nome é obrigatório</span>
+              <span *ngIf="nome.errors?.['minlength']">Nome deve ter pelo menos 2 caracteres</span>
+              <span *ngIf="nome.errors?.['maxlength']">Nome deve ter no máximo 50 caracteres</span>
+            </div>
+          </div>
 
+          <!-- Descrição -->
+          <div class="col-md-6 mb-3">
+            <label for="descricao" class="form-label">Descrição</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="descricao"
+              name="descricao"
+              [(ngModel)]="categoria.descricao"
+              maxlength="255"
+              placeholder="Descrição da categoria">
+          </div>
+
+          <!-- Cor -->
+          <div class="col-md-4 mb-3">
+            <label for="cor" class="form-label">Cor</label>
+            <input 
+              type="color" 
+              class="form-control form-control-color" 
+              id="cor"
+              name="cor"
+              [(ngModel)]="categoria.cor"
+              title="Escolha uma cor para a categoria">
+          </div>
+
+          <!-- Ícone -->
+          <div class="col-md-4 mb-3">
+            <label for="icone" class="form-label">Ícone (Bootstrap Icons)</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi" [ngClass]="categoria.icone || 'bi-tag'"></i>
+              </span>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="icone"
+                name="icone"
+                [(ngModel)]="categoria.icone"
+                placeholder="bi-bread-slice">
+            </div>
+            <small class="text-muted">
+              Ex: bi-bread-slice, bi-cake2, bi-cookie, bi-cup-hot
+            </small>
+          </div>
+
+          <!-- Status Ativo -->
+          <div class="col-md-4 mb-3">
+            <label class="form-label d-block">Status</label>
+            <div class="form-check form-switch">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                role="switch"
+                id="ativa"
+                name="ativa"
+                [(ngModel)]="categoria.ativa">
+              <label class="form-check-label" for="ativa">
+                {{ categoria.ativa ? 'Ativa' : 'Inativa' }}
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões -->
+        <div class="d-flex gap-2 mt-4">
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="!categoriaForm.form.valid || loading">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+            <i class="bi bi-save" *ngIf="!loading"></i>
+            {{ modoEdicao ? 'Atualizar' : 'Cadastrar' }}
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-secondary"
+            (click)="voltar()">
+            <i class="bi bi-arrow-left"></i>
+            Voltar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

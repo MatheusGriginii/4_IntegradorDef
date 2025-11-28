@@ -8,6 +8,3 @@ export interface Produto {
   imagemUrl?: string;
   disponivel?: boolean;
 }
-
-// Export para compatibilidade com código antigo
-export type Vaga = Produto;

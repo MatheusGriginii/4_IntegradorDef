@@ -1,1 +1,101 @@
+<div class="container-fluid mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Endereços</h2>
+    <button class="btn btn-primary" routerLink="/app/enderecos/cadastro">
+      <i class="bi bi-plus-circle"></i> Novo Endereço
+    </button>
+  </div>
 
+  <!-- Filtros -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <input 
+            type="text" 
+            class="form-control" 
+            placeholder="Buscar por logradouro, bairro ou cidade..."
+            [(ngModel)]="filtroTexto"
+            (input)="filtrarEnderecos()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de Endereços -->
+  <div class="row">
+    <div class="col-12" *ngIf="enderecosFiltrados.length === 0 && !loading">
+      <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> Nenhum endereço encontrado.
+      </div>
+    </div>
+
+    <div class="col-12" *ngIf="loading">
+      <div class="text-center p-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4 mb-4" *ngFor="let endereco of enderecosFiltrados">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <h5 class="card-title mb-0">
+              <i class="bi bi-geo-alt-fill text-primary"></i>
+              {{ endereco.logradouro }}, {{ endereco.numero }}
+            </h5>
+            <span 
+              class="badge"
+              [ngClass]="endereco.ativo ? 'bg-success' : 'bg-danger'">
+              {{ endereco.ativo ? 'Ativo' : 'Inativo' }}
+            </span>
+          </div>
+
+          <div class="mb-2" *ngIf="endereco.complemento">
+            <small class="text-muted">Complemento:</small><br>
+            <span>{{ endereco.complemento }}</span>
+          </div>
+
+          <div class="mb-2">
+            <small class="text-muted">Bairro:</small><br>
+            <span>{{ endereco.bairro }}</span>
+          </div>
+
+          <div class="mb-2">
+            <small class="text-muted">Cidade/UF:</small><br>
+            <span>{{ endereco.cidade }} - {{ endereco.estado }}</span>
+          </div>
+
+          <div class="mb-3">
+            <small class="text-muted">CEP:</small><br>
+            <span>{{ endereco.cep }}</span>
+          </div>
+
+          <div class="mb-3" *ngIf="endereco.areaEntrega">
+            <span class="badge bg-info">
+              <i class="bi bi-truck"></i> Área de entrega
+              <span *ngIf="endereco.taxaEntrega"> - R$ {{ endereco.taxaEntrega | number:'1.2-2' }}</span>
+            </span>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button 
+              class="btn btn-sm btn-outline-primary flex-fill"
+              (click)="editarEndereco(endereco.id!)"
+              title="Editar">
+              <i class="bi bi-pencil"></i> Editar
+            </button>
+            <button 
+              class="btn btn-sm btn-outline-danger"
+              (click)="excluirEndereco(endereco)"
+              title="Excluir">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

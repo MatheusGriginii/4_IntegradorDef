@@ -27,7 +27,7 @@ public class Usuario {
     @Column(nullable = false)
     private String senha;
 
-    @NotBlank(message = "O campo perfil é obrigatório")
+    @NotNull(message = "O campo perfil é obrigatório")
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     private PerfilUsuario perfil;

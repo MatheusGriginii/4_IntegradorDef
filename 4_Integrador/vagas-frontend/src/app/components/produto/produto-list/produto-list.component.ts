@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { ProdutoService } from '../../../services/vaga.service';
-import { CategoriaService } from '../../../services/empresa.service';
-import { Produto } from '../../../models/vaga';
+import { ProdutoService } from '../../../services/produto.service';
+import { CategoriaService } from '../../../services/categoria.service';
+import { Produto } from '../../../models/produto';
 import { Categoria } from '../../../models/empresa';
 import Swal from 'sweetalert2';
 
@@ -12,8 +12,8 @@ import Swal from 'sweetalert2';
   selector: 'app-produto-list',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
-  templateUrl: './vaga-list.component.html',
-  styleUrl: './vaga-list.component.scss'
+  templateUrl: './produto-list.component.html',
+  styleUrl: './produto-list.component.scss'
 })
 export class ProdutoListComponent implements OnInit {
   produtos: Produto[] = [];
@@ -38,13 +38,26 @@ export class ProdutoListComponent implements OnInit {
   carregarProdutos(): void {
     this.loading = true;
     this.produtoService.listar().subscribe({
-      next: (produtos) => {
+      next: (produtos: Produto[]) => {
         this.produtos = produtos;
         this.produtosFiltrados = produtos;
         this.loading = false;
       },
-      error: (erro) => {
-        Swal.fire('Erro!', erro.error || 'Erro ao carregar produtos', 'error');
+      error: (erro: any) => {
+        console.error('Erro ao carregar produtos:', erro);
+        let mensagem = 'Erro ao carregar produtos';
+        
+        if (erro.error) {
+          if (erro.error.error && typeof erro.error.error === 'string') {
+            mensagem = erro.error.error;
+          } else if (erro.error.mensagem) {
+            mensagem = erro.error.mensagem;
+          } else if (typeof erro.error === 'string') {
+            mensagem = erro.error;
+          }
+        }
+        
+        Swal.fire('Erro!', mensagem, 'error');
         this.loading = false;
       }
     });
@@ -52,10 +65,10 @@ export class ProdutoListComponent implements OnInit {
 
   carregarCategorias(): void {
     this.categoriaService.listar().subscribe({
-      next: (categorias) => {
+      next: (categorias: Categoria[]) => {
         this.categorias = categorias;
       },
-      error: (erro) => {
+      error: (erro: any) => {
         console.error('Erro ao carregar categorias', erro);
       }
     });
@@ -65,11 +78,11 @@ export class ProdutoListComponent implements OnInit {
     if (this.filtroNome.trim()) {
       this.loading = true;
       this.produtoService.buscarPorNome(this.filtroNome).subscribe({
-        next: (produtos) => {
+        next: (produtos: Produto[]) => {
           this.produtosFiltrados = produtos;
           this.loading = false;
         },
-        error: (erro) => {
+        error: (erro: any) => {
           Swal.fire('Erro!', erro.error || 'Erro ao buscar produtos', 'error');
           this.loading = false;
         }
@@ -82,16 +95,23 @@ export class ProdutoListComponent implements OnInit {
   buscarPorCategoria(): void {
     if (this.filtroCategoria.trim()) {
       this.loading = true;
-      this.produtoService.buscarPorCategoria(this.filtroCategoria).subscribe({
-        next: (produtos) => {
-          this.produtosFiltrados = produtos;
-          this.loading = false;
-        },
-        error: (erro) => {
-          Swal.fire('Erro!', erro.error || 'Erro ao buscar produtos', 'error');
-          this.loading = false;
-        }
-      });
+      // Converte o nome da categoria para ID (assumindo que filtroCategoria é um número em string)
+      const categoriaId = parseInt(this.filtroCategoria);
+      if (!isNaN(categoriaId)) {
+        this.produtoService.listarPorCategoria(categoriaId).subscribe({
+          next: (produtos: Produto[]) => {
+            this.produtosFiltrados = produtos;
+            this.loading = false;
+          },
+          error: (erro: any) => {
+            Swal.fire('Erro!', erro.error || 'Erro ao buscar produtos', 'error');
+            this.loading = false;
+          }
+        });
+      } else {
+        this.loading = false;
+        this.produtosFiltrados = this.produtos;
+      }
     } else {
       this.produtosFiltrados = this.produtos;
     }
@@ -100,12 +120,12 @@ export class ProdutoListComponent implements OnInit {
   filtrarDisponiveis(): void {
     if (this.mostrarDisponiveis) {
       this.loading = true;
-      this.produtoService.buscarDisponiveis().subscribe({
-        next: (produtos) => {
+      this.produtoService.listarAtivos().subscribe({
+        next: (produtos: Produto[]) => {
           this.produtosFiltrados = produtos;
           this.loading = false;
         },
-        error: (erro) => {
+        error: (erro: any) => {
           Swal.fire('Erro!', erro.error || 'Erro ao buscar produtos', 'error');
           this.loading = false;
         }
@@ -156,7 +176,7 @@ export class ProdutoListComponent implements OnInit {
             Swal.fire('Excluído!', 'Produto excluído com sucesso.', 'success');
             this.carregarProdutos();
           },
-          error: (erro) => {
+          error: (erro: any) => {
             Swal.fire('Erro!', erro.error || 'Erro ao excluir produto', 'error');
           }
         });

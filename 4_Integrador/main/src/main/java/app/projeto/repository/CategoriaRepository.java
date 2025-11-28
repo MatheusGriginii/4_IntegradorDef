@@ -22,11 +22,20 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
     // Buscar categoria por nome (case insensitive)
     Optional<Categoria> findByNomeIgnoreCaseAndAtivaTrue(String nome);
     
+    // Buscar categoria por nome (qualquer status)
+    Optional<Categoria> findByNomeIgnoreCase(String nome);
+    
     // Buscar categorias por nome contendo texto (case insensitive)
     @Query("SELECT c FROM Categoria c WHERE LOWER(c.nome) LIKE LOWER(CONCAT('%', :nome, '%')) AND c.ativa = true")
     List<Categoria> findByNomeContainingIgnoreCaseAndAtivaTrue(@Param("nome") String nome);
     
+    // Buscar categorias por nome contendo texto (qualquer status)
+    List<Categoria> findByNomeContainingIgnoreCase(String nome);
+    
     Page<Categoria> findByNomeContainingIgnoreCaseAndAtivaTrue(String nome, Pageable pageable);
+    
+    // Verificar se categoria existe por nome (qualquer status)
+    boolean existsByNomeIgnoreCase(String nome);
     
     // Buscar categorias ordenadas por nome
     List<Categoria> findByAtivaTrueOrderByNomeAsc();

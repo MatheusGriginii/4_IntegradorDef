@@ -2,7 +2,11 @@ export interface Categoria {
   id?: number;
   nome: string;
   descricao?: string;
-  produtos?: any[];
+  cor?: string;
+  icone?: string;
+  ativa?: boolean;
+  dataCriacao?: Date;
+  dataAtualizacao?: Date;
 }
 
 // Export para compatibilidade com código antigo

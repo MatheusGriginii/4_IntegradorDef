@@ -1,1 +1,80 @@
+<div class="container-fluid mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Categorias de Produtos</h2>
+    <button class="btn btn-primary" routerLink="/app/empresas/cadastro">
+      <i class="bi bi-plus-circle"></i> Nova Categoria
+    </button>
+  </div>
 
+  <!-- Filtros -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <input 
+            type="text" 
+            class="form-control" 
+            placeholder="Buscar por nome..."
+            [(ngModel)]="filtroNome"
+            (input)="buscarPorNome()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de Categorias -->
+  <div class="row">
+    <div class="col-12" *ngIf="categoriasFiltradas.length === 0 && !loading">
+      <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> Nenhuma categoria encontrada.
+      </div>
+    </div>
+
+    <div class="col-12" *ngIf="loading">
+      <div class="text-center p-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4 mb-4" *ngFor="let categoria of categoriasFiltradas">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <h5 class="card-title mb-0">{{ categoria.nome }}</h5>
+            <span 
+              class="badge"
+              [ngClass]="categoria.ativa ? 'bg-success' : 'bg-danger'">
+              {{ categoria.ativa ? 'Ativa' : 'Inativa' }}
+            </span>
+          </div>
+
+          <p class="card-text text-muted" *ngIf="categoria.descricao">
+            {{ categoria.descricao }}
+          </p>
+
+          <div class="text-muted small mb-3">
+            <i class="bi bi-calendar"></i> 
+            Cadastrada em {{ categoria.dataCriacao | date: 'dd/MM/yyyy' }}
+          </div>
+
+          <div class="d-flex gap-2">
+            <button 
+              class="btn btn-sm btn-outline-primary flex-fill"
+              (click)="editarCategoria(categoria.id!)"
+              title="Editar">
+              <i class="bi bi-pencil"></i> Editar
+            </button>
+            <button 
+              class="btn btn-sm btn-outline-danger"
+              (click)="excluirCategoria(categoria)"
+              title="Excluir">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

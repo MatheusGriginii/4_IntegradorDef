@@ -1,5 +1,6 @@
 package app.projeto.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
@@ -33,6 +34,7 @@ public class Categoria {
     private String cor = "#C8102E"; // Cor padrão da ADORELA
     
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Produto> produtos = new ArrayList<>();
     
     @Column(name = "data_criacao", nullable = false, updatable = false)
@@ -148,10 +150,12 @@ public class Categoria {
         produto.setCategoria(null);
     }
     
+    @JsonIgnore
     public int getTotalProdutos() {
         return produtos.size();
     }
     
+    @JsonIgnore
     public int getTotalProdutosAtivos() {
         return (int) produtos.stream().filter(Produto::getAtivo).count();
     }
@@ -163,7 +167,6 @@ public class Categoria {
                 ", nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
                 ", ativa=" + ativa +
-                ", totalProdutos=" + produtos.size() +
                 '}';
     }
 }

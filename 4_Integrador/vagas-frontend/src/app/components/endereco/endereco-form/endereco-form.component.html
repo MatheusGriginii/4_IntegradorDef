@@ -1,1 +1,238 @@
+<div class="container-fluid mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h3>{{ modoEdicao ? 'Editar Endereço' : 'Novo Endereço' }}</h3>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="salvar()" #enderecoForm="ngForm">
+        <div class="row">
+          <!-- CEP -->
+          <div class="col-md-3 mb-3">
+            <label for="cep" class="form-label">CEP <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <input 
+                type="text" 
+                class="form-control" 
+                id="cep"
+                name="cep"
+                [(ngModel)]="endereco.cep"
+                #cep="ngModel"
+                required
+                maxlength="8"
+                (blur)="buscarCep()"
+                placeholder="00000000">
+              <button 
+                class="btn btn-outline-secondary" 
+                type="button"
+                (click)="buscarCep()"
+                [disabled]="buscandoCep">
+                <span *ngIf="buscandoCep" class="spinner-border spinner-border-sm"></span>
+                <i class="bi bi-search" *ngIf="!buscandoCep"></i>
+              </button>
+            </div>
+            <div class="invalid-feedback" *ngIf="cep.invalid && cep.touched">
+              CEP é obrigatório (8 dígitos)
+            </div>
+          </div>
 
+          <!-- Logradouro -->
+          <div class="col-md-6 mb-3">
+            <label for="logradouro" class="form-label">Logradouro <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="logradouro"
+              name="logradouro"
+              [(ngModel)]="endereco.logradouro"
+              #logradouro="ngModel"
+              required
+              maxlength="200"
+              placeholder="Rua, Avenida, Travessa...">
+            <div class="invalid-feedback" *ngIf="logradouro.invalid && logradouro.touched">
+              Logradouro é obrigatório
+            </div>
+          </div>
+
+          <!-- Número -->
+          <div class="col-md-3 mb-3">
+            <label for="numero" class="form-label">Número <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="numero"
+              name="numero"
+              [(ngModel)]="endereco.numero"
+              #numero="ngModel"
+              required
+              maxlength="10"
+              placeholder="123">
+            <div class="invalid-feedback" *ngIf="numero.invalid && numero.touched">
+              Número é obrigatório
+            </div>
+          </div>
+
+          <!-- Complemento -->
+          <div class="col-md-4 mb-3">
+            <label for="complemento" class="form-label">Complemento</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="complemento"
+              name="complemento"
+              [(ngModel)]="endereco.complemento"
+              maxlength="100"
+              placeholder="Apto, Bloco, Casa...">
+          </div>
+
+          <!-- Bairro -->
+          <div class="col-md-4 mb-3">
+            <label for="bairro" class="form-label">Bairro <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="bairro"
+              name="bairro"
+              [(ngModel)]="endereco.bairro"
+              #bairro="ngModel"
+              required
+              maxlength="100"
+              placeholder="Nome do bairro">
+            <div class="invalid-feedback" *ngIf="bairro.invalid && bairro.touched">
+              Bairro é obrigatório
+            </div>
+          </div>
+
+          <!-- Cidade -->
+          <div class="col-md-3 mb-3">
+            <label for="cidade" class="form-label">Cidade <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="cidade"
+              name="cidade"
+              [(ngModel)]="endereco.cidade"
+              #cidade="ngModel"
+              required
+              maxlength="100"
+              placeholder="Nome da cidade">
+            <div class="invalid-feedback" *ngIf="cidade.invalid && cidade.touched">
+              Cidade é obrigatória
+            </div>
+          </div>
+
+          <!-- Estado -->
+          <div class="col-md-1 mb-3">
+            <label for="estado" class="form-label">UF <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control text-uppercase" 
+              id="estado"
+              name="estado"
+              [(ngModel)]="endereco.estado"
+              #estado="ngModel"
+              required
+              maxlength="2"
+              minlength="2"
+              placeholder="SP">
+            <div class="invalid-feedback" *ngIf="estado.invalid && estado.touched">
+              UF obrigatória
+            </div>
+          </div>
+
+          <!-- Ponto de Referência -->
+          <div class="col-md-6 mb-3">
+            <label for="pontoReferencia" class="form-label">Ponto de Referência</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="pontoReferencia"
+              name="pontoReferencia"
+              [(ngModel)]="endereco.pontoReferencia"
+              maxlength="200"
+              placeholder="Próximo à...">
+          </div>
+
+          <!-- Observações -->
+          <div class="col-md-6 mb-3">
+            <label for="observacoes" class="form-label">Observações</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="observacoes"
+              name="observacoes"
+              [(ngModel)]="endereco.observacoes"
+              maxlength="255"
+              placeholder="Informações adicionais">
+          </div>
+
+          <!-- Área de Entrega -->
+          <div class="col-md-4 mb-3">
+            <label class="form-label d-block">Área de Entrega</label>
+            <div class="form-check form-switch">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                role="switch"
+                id="areaEntrega"
+                name="areaEntrega"
+                [(ngModel)]="endereco.areaEntrega">
+              <label class="form-check-label" for="areaEntrega">
+                {{ endereco.areaEntrega ? 'Sim, atendemos esta região' : 'Não atendemos esta região' }}
+              </label>
+            </div>
+          </div>
+
+          <!-- Taxa de Entrega -->
+          <div class="col-md-4 mb-3" *ngIf="endereco.areaEntrega">
+            <label for="taxaEntrega" class="form-label">Taxa de Entrega (R$)</label>
+            <input 
+              type="number" 
+              class="form-control" 
+              id="taxaEntrega"
+              name="taxaEntrega"
+              [(ngModel)]="endereco.taxaEntrega"
+              step="0.01"
+              min="0"
+              placeholder="0.00">
+          </div>
+
+          <!-- Status Ativo -->
+          <div class="col-md-4 mb-3">
+            <label class="form-label d-block">Status</label>
+            <div class="form-check form-switch">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                role="switch"
+                id="ativo"
+                name="ativo"
+                [(ngModel)]="endereco.ativo">
+              <label class="form-check-label" for="ativo">
+                {{ endereco.ativo ? 'Ativo' : 'Inativo' }}
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões -->
+        <div class="d-flex gap-2 mt-4">
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="!enderecoForm.form.valid || loading">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+            <i class="bi bi-save" *ngIf="!loading"></i>
+            {{ modoEdicao ? 'Atualizar' : 'Cadastrar' }}
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-secondary"
+            (click)="voltar()">
+            <i class="bi bi-arrow-left"></i>
+            Voltar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,6 @@
 package app.projeto.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
@@ -27,9 +28,10 @@ public class Produto {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal preco;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "categoria_id")
     @NotNull(message = "Categoria é obrigatória")
+    @JsonIgnoreProperties({"produtos", "hibernateLazyInitializer", "handler"})
     private Categoria categoria;
     
     @Min(value = 0, message = "Estoque não pode ser negativo")

@@ -1,11 +1,17 @@
 export interface Endereco {
   id?: number;
-  cep?: string;
-  rua: string;
-  numero?: string;
-  cidade: string;
-  estado?: string;
-  uf?: string;
+  cep: string;
+  logradouro: string;
+  numero: string;
   complemento?: string;
-  usuarios?: any[];
+  bairro: string;
+  cidade: string;
+  estado: string;
+  pontoReferencia?: string;
+  observacoes?: string;
+  areaEntrega?: boolean;
+  taxaEntrega?: number;
+  ativo?: boolean;
+  dataCriacao?: Date;
+  dataAtualizacao?: Date;
 }

@@ -7,7 +7,7 @@ import { Endereco } from '../models/endereco';
   providedIn: 'root'
 })
 export class EnderecoService {
-  private baseUrl = 'http://localhost:8080/enderecos';
+  private baseUrl = 'http://localhost:8080/api/enderecos';
 
   constructor(private http: HttpClient) { }
 
