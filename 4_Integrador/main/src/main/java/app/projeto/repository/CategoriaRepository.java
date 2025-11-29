@@ -19,6 +19,9 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
     
     Page<Categoria> findByAtivaTrue(Pageable pageable);
     
+    // Contar categorias ativas
+    long countByAtivaTrue();
+    
     // Buscar categoria por nome (case insensitive)
     Optional<Categoria> findByNomeIgnoreCaseAndAtivaTrue(String nome);
     

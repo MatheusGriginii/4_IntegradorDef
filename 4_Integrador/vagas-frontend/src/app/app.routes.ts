@@ -13,6 +13,7 @@ import { EnderecoListComponent } from './components/endereco/endereco-list/ender
 import { EnderecoFormComponent } from './components/endereco/endereco-form/endereco-form.component';
 import { PedidoListComponent } from './components/pedido/pedido-list/pedido-list.component';
 import { PedidoFormComponent } from './components/pedido/pedido-form/pedido-form.component';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -21,34 +22,110 @@ export const routes: Routes = [
   {
     path: 'app',
     component: LayoutComponent,
+    canActivate: [AuthGuard], // Protege todo o layout
     children: [
       { path: 'dashboard', component: DashboardComponent },
       
-      { path: 'usuarios', component: UsuarioListComponent },
-      { path: 'usuarios/novo', component: UsuarioFormComponent },
-      { path: 'usuarios/editar/:id', component: UsuarioFormComponent },
+      // Rotas de usuários - apenas ADMIN pode criar/editar/deletar
+      { 
+        path: 'usuarios', 
+        component: UsuarioListComponent
+      },
+      { 
+        path: 'usuarios/novo', 
+        component: UsuarioFormComponent,
+        canActivate: [AuthGuard],
+        data: { perfis: ['ADMIN'] }
+      },
+      { 
+        path: 'usuarios/editar/:id', 
+        component: UsuarioFormComponent,
+        canActivate: [AuthGuard],
+        data: { perfis: ['ADMIN', 'GERENTE'] }
+      },
       
-      { path: 'categorias', component: CategoriaListComponent },
-      { path: 'categorias/novo', component: EmpresaFormComponent },
-      { path: 'categorias/editar/:id', component: EmpresaFormComponent },
+      // Rotas de categorias - ADMIN e GERENTE
+      { 
+        path: 'categorias', 
+        component: CategoriaListComponent
+      },
+      { 
+        path: 'categorias/novo', 
+        component: EmpresaFormComponent,
+        canActivate: [AuthGuard],
+        data: { perfis: ['ADMIN', 'GERENTE'] }
+      },
+      { 
+        path: 'categorias/editar/:id', 
+        component: EmpresaFormComponent,
+        canActivate: [AuthGuard],
+        data: { perfis: ['ADMIN', 'GERENTE'] }
+      },
       
       // Rotas de empresas (compatibilidade)
       { path: 'empresas', redirectTo: 'categorias', pathMatch: 'full' },
-      { path: 'empresas/cadastro', component: EmpresaFormComponent },
-      { path: 'empresas/editar/:id', component: EmpresaFormComponent },
+      { 
+        path: 'empresas/cadastro', 
+        component: EmpresaFormComponent,
+        canActivate: [AuthGuard],
+        data: { perfis: ['ADMIN', 'GERENTE'] }
+      },
+      { 
+        path: 'empresas/editar/:id', 
+        component: EmpresaFormComponent,
+        canActivate: [AuthGuard],
+        data: { perfis: ['ADMIN', 'GERENTE'] }
+      },
       
-      { path: 'produtos', component: ProdutoListComponent },
-      { path: 'produtos/novo', component: ProdutoFormComponent },
-      { path: 'produtos/editar/:id', component: ProdutoFormComponent },
+      // Rotas de produtos - ADMIN e GERENTE podem criar/editar
+      { 
+        path: 'produtos', 
+        component: ProdutoListComponent
+      },
+      { 
+        path: 'produtos/novo', 
+        component: ProdutoFormComponent,
+        canActivate: [AuthGuard],
+        data: { perfis: ['ADMIN', 'GERENTE'] }
+      },
+      { 
+        path: 'produtos/editar/:id', 
+        component: ProdutoFormComponent,
+        canActivate: [AuthGuard],
+        data: { perfis: ['ADMIN', 'GERENTE'] }
+      },
       
-      { path: 'pedidos', component: PedidoListComponent },
-      { path: 'pedidos/novo', component: PedidoFormComponent },
-      { path: 'pedidos/detalhes/:id', component: PedidoFormComponent },
+      // Rotas de pedidos - todos autenticados podem acessar
+      { 
+        path: 'pedidos', 
+        component: PedidoListComponent
+      },
+      { 
+        path: 'pedidos/novo', 
+        component: PedidoFormComponent
+      },
+      { 
+        path: 'pedidos/detalhes/:id', 
+        component: PedidoFormComponent
+      },
       
-      { path: 'enderecos', component: EnderecoListComponent },
-      { path: 'enderecos/cadastro', component: EnderecoFormComponent },
-      { path: 'enderecos/novo', component: EnderecoFormComponent },
-      { path: 'enderecos/editar/:id', component: EnderecoFormComponent },
+      // Rotas de endereços - todos autenticados podem acessar
+      { 
+        path: 'enderecos', 
+        component: EnderecoListComponent
+      },
+      { 
+        path: 'enderecos/cadastro', 
+        component: EnderecoFormComponent
+      },
+      { 
+        path: 'enderecos/novo', 
+        component: EnderecoFormComponent
+      },
+      { 
+        path: 'enderecos/editar/:id', 
+        component: EnderecoFormComponent
+      },
       
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]

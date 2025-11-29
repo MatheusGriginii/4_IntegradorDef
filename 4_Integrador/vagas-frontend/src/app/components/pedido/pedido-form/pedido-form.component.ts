@@ -83,15 +83,12 @@ export class PedidoFormComponent implements OnInit {
   }
 
   salvar(): void {
-    if (!this.pedido.cliente) {
-      alert('Selecione um cliente');
-      return;
-    }
-
     if (!this.pedido.itens || this.pedido.itens.length === 0) {
       alert('Adicione pelo menos um produto ao pedido');
       return;
     }
+
+    console.log('📦 Dados do pedido a enviar:', JSON.stringify(this.pedido, null, 2));
 
     if (this.isEdicao && this.pedido.id) {
       this.pedidoService.atualizar(this.pedido.id, this.pedido).subscribe({
@@ -100,8 +97,9 @@ export class PedidoFormComponent implements OnInit {
           this.router.navigate(['/app/pedidos']);
         },
         error: (error) => {
-          console.error('Erro ao atualizar pedido:', error);
-          alert('Erro ao atualizar pedido');
+          console.error('❌ Erro completo:', error);
+          console.error('❌ Erro detalhes:', error.error);
+          alert('Erro ao atualizar pedido: ' + (error.error?.message || error.message));
         }
       });
     } else {
@@ -111,8 +109,11 @@ export class PedidoFormComponent implements OnInit {
           this.router.navigate(['/app/pedidos']);
         },
         error: (error) => {
-          console.error('Erro ao criar pedido:', error);
-          alert('Erro ao criar pedido');
+          console.error('❌ Erro completo:', error);
+          console.error('❌ Erro detalhes:', error.error);
+          console.error('❌ Status:', error.status);
+          console.error('❌ Message:', error.message);
+          alert('Erro ao criar pedido: ' + (error.error?.message || error.message));
         }
       });
     }

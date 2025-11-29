@@ -20,6 +20,9 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     
     Page<Produto> findByAtivoTrue(Pageable pageable);
     
+    // Contar produtos ativos
+    long countByAtivoTrue();
+    
     // Buscar por categoria
     List<Produto> findByCategoriaAndAtivoTrue(Categoria categoria);
     

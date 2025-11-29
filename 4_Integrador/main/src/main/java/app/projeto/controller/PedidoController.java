@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/pedidos")
@@ -37,11 +38,11 @@ public class PedidoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/cliente/{clienteId}")
-    public ResponseEntity<List<Pedido>> listarPorCliente(@PathVariable Long clienteId) {
-        List<Pedido> pedidos = pedidoService.listarPorCliente(clienteId);
-        return ResponseEntity.ok(pedidos);
-    }
+    // @GetMapping("/cliente/{clienteId}")
+    // public ResponseEntity<List<Pedido>> listarPorCliente(@PathVariable Long clienteId) {
+    //     List<Pedido> pedidos = pedidoService.listarPorCliente(clienteId);
+    //     return ResponseEntity.ok(pedidos);
+    // }
 
     @GetMapping("/status/{status}")
     public ResponseEntity<List<Pedido>> listarPorStatus(@PathVariable StatusPedido status) {
@@ -100,12 +101,16 @@ public class PedidoController {
     }
 
     @PostMapping
-    public ResponseEntity<Pedido> criar(@Valid @RequestBody Pedido pedido) {
+    public ResponseEntity<?> criar(@Valid @RequestBody Pedido pedido) {
         try {
+            System.out.println("🔍 Recebendo pedido: " + pedido);
+            System.out.println("🔍 Itens: " + pedido.getItens());
             Pedido pedidoCriado = pedidoService.criar(pedido);
             return ResponseEntity.status(HttpStatus.CREATED).body(pedidoCriado);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            System.err.println("❌ Erro ao criar pedido: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
 

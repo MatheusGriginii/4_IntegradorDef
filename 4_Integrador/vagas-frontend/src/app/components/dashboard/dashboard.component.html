@@ -14,7 +14,7 @@
       <div class="card text-center">
         <div class="card-body">
           <i class="fas fa-cookie-bite fa-3x icon-product mb-3"></i>
-          <h3 class="card-title">156</h3>
+          <h3 class="card-title">{{ stats.totalProdutos }}</h3>
           <p class="text-muted mb-0">Produtos Ativos</p>
         </div>
       </div>
@@ -24,7 +24,7 @@
       <div class="card text-center">
         <div class="card-body">
           <i class="fas fa-tags fa-3x icon-category mb-3"></i>
-          <h3 class="card-title">18</h3>
+          <h3 class="card-title">{{ stats.totalCategorias }}</h3>
           <p class="text-muted mb-0">Categorias</p>
         </div>
       </div>
@@ -34,7 +34,7 @@
       <div class="card text-center">
         <div class="card-body">
           <i class="fas fa-user-friends fa-3x icon-client mb-3"></i>
-          <h3 class="card-title">1.287</h3>
+          <h3 class="card-title">{{ stats.totalClientes }}</h3>
           <p class="text-muted mb-0">Clientes Cadastrados</p>
         </div>
       </div>
@@ -44,7 +44,7 @@
       <div class="card text-center">
         <div class="card-body">
           <i class="fas fa-shopping-cart fa-3x icon-order mb-3"></i>
-          <h3 class="card-title">127</h3>
+          <h3 class="card-title">{{ stats.totalPedidosHoje }}</h3>
           <p class="text-muted mb-0">Pedidos de Hoje</p>
         </div>
       </div>
@@ -60,44 +60,31 @@
           Produtos em Destaque
         </div>
         <div class="card-body">
-          <div class="row g-3">
-            <div class="col-md-4">
-              <div class="product-card">
-                <div class="product-image d-flex align-items-center justify-content-center">
-                  <i class="fas fa-bread-slice fa-4x" style="color: #8B4513;"></i>
-                </div>
-                <div class="product-info">
-                  <div class="product-name">Pão Francês</div>
-                  <p class="text-muted mb-2">Quentinho e crocante</p>
-                  <div class="product-price">R$ 0,75</div>
-                  <span class="badge badge-success">Em Estoque</span>
-                </div>
-              </div>
+          <div *ngIf="carregando" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Carregando...</span>
             </div>
-            
-            <div class="col-md-4">
+          </div>
+          
+          <div *ngIf="!carregando && produtosDestaque.length === 0" class="text-center py-5 text-muted">
+            <i class="fas fa-info-circle fa-3x mb-3"></i>
+            <p>Nenhum produto cadastrado ainda.</p>
+            <button class="btn btn-primary" routerLink="/app/produtos">
+              <i class="fas fa-plus me-2"></i>
+              Cadastrar Primeiro Produto
+            </button>
+          </div>
+          
+          <div *ngIf="!carregando && produtosDestaque.length > 0" class="row g-3">
+            <div class="col-md-4" *ngFor="let produto of produtosDestaque">
               <div class="product-card">
                 <div class="product-image d-flex align-items-center justify-content-center">
                   <i class="fas fa-cookie fa-4x" style="color: #D2691E;"></i>
                 </div>
                 <div class="product-info">
-                  <div class="product-name">Bolo de Chocolate</div>
-                  <p class="text-muted mb-2">Receita especial artesanal</p>
-                  <div class="product-price">R$ 45,00</div>
-                  <span class="badge badge-success">Em Estoque</span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="col-md-4">
-              <div class="product-card">
-                <div class="product-image d-flex align-items-center justify-content-center">
-                  <i class="fas fa-moon fa-4x" style="color: #8B4513;"></i>
-                </div>
-                <div class="product-info">
-                  <div class="product-name">Croissant Tradicional</div>
-                  <p class="text-muted mb-2">Folhado e amanteigado</p>
-                  <div class="product-price">R$ 8,50</div>
+                  <div class="product-name">{{ produto.nome }}</div>
+                  <p class="text-muted mb-2">{{ produto.descricao || 'Produto delicioso' }}</p>
+                  <div class="product-price">{{ produto.preco | currency:'BRL' }}</div>
                   <span class="badge badge-success">Em Estoque</span>
                 </div>
               </div>
