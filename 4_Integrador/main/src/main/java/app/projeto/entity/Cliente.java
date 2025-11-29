@@ -1,12 +1,12 @@
 package app.projeto.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+// import com.fasterxml.jackson.annotation.JsonIgnore; // REMOVIDO - Pedidos desabilitado
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+// import java.util.ArrayList; // REMOVIDO - Pedidos desabilitado
+// import java.util.List; // REMOVIDO - Pedidos desabilitado
 
 @Entity
 @Table(name = "clientes")
@@ -50,9 +50,10 @@ public class Cliente {
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;
     
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Pedido> pedidos = new ArrayList<>();
+    // PEDIDOS DESABILITADO - Cliente não é mais obrigatório em Pedido
+    // @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // @JsonIgnore
+    // private List<Pedido> pedidos = new ArrayList<>();
     
     @Column(name = "cliente_ativo", nullable = false)
     private Boolean ativo = true;
@@ -171,13 +172,14 @@ public class Cliente {
         this.endereco = endereco;
     }
     
-    public List<Pedido> getPedidos() {
-        return pedidos;
-    }
+    // PEDIDOS DESABILITADO
+    // public List<Pedido> getPedidos() {
+    //     return pedidos;
+    // }
     
-    public void setPedidos(List<Pedido> pedidos) {
-        this.pedidos = pedidos;
-    }
+    // public void setPedidos(List<Pedido> pedidos) {
+    //     this.pedidos = pedidos;
+    // }
     
     public Boolean getAtivo() {
         return ativo;
@@ -224,19 +226,21 @@ public class Cliente {
         return sobrenome != null ? nome + " " + sobrenome : nome;
     }
     
-    public void adicionarPedido(Pedido pedido) {
-        pedidos.add(pedido);
-        pedido.setCliente(this);
-    }
+    // MÉTODOS DE PEDIDO DESABILITADOS - Cliente não é mais obrigatório em Pedido
+    // public void adicionarPedido(Pedido pedido) {
+    //     pedidos.add(pedido);
+    //     pedido.setCliente(this);
+    // }
     
-    public void removerPedido(Pedido pedido) {
-        pedidos.remove(pedido);
-        pedido.setCliente(null);
-    }
+    // public void removerPedido(Pedido pedido) {
+    //     pedidos.remove(pedido);
+    //     pedido.setCliente(null);
+    // }
     
-    public int getTotalPedidos() {
-        return pedidos.size();
-    }
+    // PEDIDOS DESABILITADO
+    // public int getTotalPedidos() {
+    //     return pedidos.size();
+    // }
     
     public int getIdade() {
         return dataNascimento != null ? 
@@ -251,7 +255,7 @@ public class Cliente {
                 ", email='" + email + '\'' +
                 ", telefone='" + telefone + '\'' +
                 ", ativo=" + ativo +
-                ", totalPedidos=" + pedidos.size() +
+                // ", totalPedidos=" + pedidos.size() +
                 '}';
     }
 }

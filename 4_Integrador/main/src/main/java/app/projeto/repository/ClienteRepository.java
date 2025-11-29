@@ -61,10 +61,10 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     List<Cliente> findByEnderecoCep(@Param("cep") String cep);
     
     // Buscar clientes que fizeram pedidos recentemente
-    @Query("SELECT DISTINCT c FROM Cliente c JOIN c.pedidos p WHERE p.dataPedido >= :dataInicio")
-    List<Cliente> findClientesComPedidosRecentes(@Param("dataInicio") LocalDateTime dataInicio);
+    // @Query("SELECT DISTINCT c FROM Cliente c JOIN c.pedidos p WHERE p.dataPedido >= :dataInicio")
+    // List<Cliente> findClientesComPedidosRecentes(@Param("dataInicio") LocalDateTime dataInicio);
     
     // Buscar top clientes por quantidade de pedidos
-    @Query("SELECT c FROM Cliente c JOIN c.pedidos p GROUP BY c ORDER BY COUNT(p) DESC")
-    List<Cliente> findTopClientesPorPedidos();
+    // @Query("SELECT c FROM Cliente c JOIN c.pedidos p GROUP BY c ORDER BY COUNT(p) DESC")
+    // List<Cliente> findTopClientesPorPedidos();
 }

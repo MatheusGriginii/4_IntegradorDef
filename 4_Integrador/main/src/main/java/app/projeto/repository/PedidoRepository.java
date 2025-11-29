@@ -3,7 +3,7 @@ package app.projeto.repository;
 import app.projeto.entity.Pedido;
 import app.projeto.entity.Pedido.StatusPedido;
 import app.projeto.entity.Pedido.TipoPedido;
-import app.projeto.entity.Cliente;
+// import app.projeto.entity.Cliente;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,11 +19,11 @@ import java.util.List;
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     
     // Buscar pedidos por cliente
-    List<Pedido> findByCliente(Cliente cliente);
+    // List<Pedido> findByCliente(Cliente cliente);
     
-    List<Pedido> findByClienteId(Long clienteId);
+    // List<Pedido> findByClienteId(Long clienteId);
     
-    Page<Pedido> findByClienteId(Long clienteId, Pageable pageable);
+    // Page<Pedido> findByClienteId(Long clienteId, Pageable pageable);
     
     // Buscar pedidos por status
     List<Pedido> findByStatus(StatusPedido status);
@@ -36,7 +36,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     Page<Pedido> findByTipoPedido(TipoPedido tipoPedido, Pageable pageable);
     
     // Buscar pedidos por cliente e status
-    List<Pedido> findByClienteIdAndStatus(Long clienteId, StatusPedido status);
+    // List<Pedido> findByClienteIdAndStatus(Long clienteId, StatusPedido status);
     
     // Buscar pedidos pendentes
     @Query("SELECT p FROM Pedido p WHERE p.status = 'PENDENTE' ORDER BY p.dataPedido ASC")
@@ -56,6 +56,9 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
                                @Param("dataFim") LocalDateTime dataFim);
     
     Page<Pedido> findByDataPedidoBetween(LocalDateTime dataInicio, LocalDateTime dataFim, Pageable pageable);
+    
+    // Contar pedidos por período
+    long countByDataPedidoBetween(LocalDateTime dataInicio, LocalDateTime dataFim);
     
     // Buscar pedidos do dia
     @Query("SELECT p FROM Pedido p WHERE FUNCTION('DATE', p.dataPedido) = FUNCTION('CURRENT_DATE') ORDER BY p.dataPedido DESC")
@@ -83,7 +86,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     Long countByStatus(@Param("status") StatusPedido status);
     
     // Contar pedidos por cliente
-    Long countByClienteId(Long clienteId);
+    // Long countByClienteId(Long clienteId);
     
     // Valor total de vendas do dia
     @Query("SELECT COALESCE(SUM(p.valorFinal), 0) FROM Pedido p WHERE FUNCTION('DATE', p.dataPedido) = FUNCTION('CURRENT_DATE') AND p.status != 'CANCELADO'")

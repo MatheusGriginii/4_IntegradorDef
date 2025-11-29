@@ -1,7 +1,6 @@
 package app.projeto.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,10 +14,10 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cliente_id", nullable = false)
-    @NotNull(message = "Cliente é obrigatório")
-    private Cliente cliente;
+    // CLIENTE DESABILITADO - Sistema agora permite pedidos sem cliente
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "cliente_id", nullable = true)
+    // private Cliente cliente;
     
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ItemPedido> itens = new ArrayList<>();
@@ -102,15 +101,16 @@ public class Pedido {
         this.dataPedido = LocalDateTime.now();
     }
     
-    public Pedido(Cliente cliente) {
-        this();
-        this.cliente = cliente;
-    }
+    // CONSTRUTORES COM CLIENTE DESABILITADOS
+    // public Pedido(Cliente cliente) {
+    //     this();
+    //     this.cliente = cliente;
+    // }
     
-    public Pedido(Cliente cliente, TipoPedido tipoPedido) {
-        this(cliente);
-        this.tipoPedido = tipoPedido;
-    }
+    // public Pedido(Cliente cliente, TipoPedido tipoPedido) {
+    //     this(cliente);
+    //     this.tipoPedido = tipoPedido;
+    // }
     
     // Métodos de callback JPA
     @PrePersist
@@ -132,13 +132,14 @@ public class Pedido {
         this.id = id;
     }
     
-    public Cliente getCliente() {
-        return cliente;
-    }
+    // CLIENTE DESABILITADO
+    // public Cliente getCliente() {
+    //     return cliente;
+    // }
     
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
+    // public void setCliente(Cliente cliente) {
+    //     this.cliente = cliente;
+    // }
     
     public List<ItemPedido> getItens() {
         return itens;
@@ -299,7 +300,7 @@ public class Pedido {
     public String toString() {
         return "Pedido{" +
                 "id=" + id +
-                ", cliente=" + (cliente != null ? cliente.getNome() : "null") +
+                // ", cliente=" + (cliente != null ? cliente.getNome() : "null") +
                 ", status=" + status +
                 ", tipoPedido=" + tipoPedido +
                 ", valorTotal=" + valorTotal +

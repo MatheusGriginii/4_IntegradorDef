@@ -4,11 +4,11 @@ import app.projeto.entity.Pedido;
 import app.projeto.entity.Pedido.StatusPedido;
 import app.projeto.entity.Pedido.TipoPedido;
 import app.projeto.entity.ItemPedido;
-import app.projeto.entity.Cliente;
+// import app.projeto.entity.Cliente; // REMOVIDO - Cliente não mais obrigatório
 import app.projeto.entity.Produto;
 import app.projeto.repository.PedidoRepository;
 import app.projeto.repository.ItemPedidoRepository;
-import app.projeto.repository.ClienteRepository;
+// import app.projeto.repository.ClienteRepository; // REMOVIDO - Cliente não mais obrigatório
 import app.projeto.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,8 +29,8 @@ public class PedidoService {
     @Autowired
     private ItemPedidoRepository itemPedidoRepository;
 
-    @Autowired
-    private ClienteRepository clienteRepository;
+    // @Autowired
+    // private ClienteRepository clienteRepository; // REMOVIDO - Cliente não mais obrigatório
 
     @Autowired
     private ProdutoRepository produtoRepository;
@@ -39,10 +40,10 @@ public class PedidoService {
         return pedidoRepository.findAllByOrderByDataPedidoDesc();
     }
 
-    @Transactional(readOnly = true)
-    public List<Pedido> listarPorCliente(Long clienteId) {
-        return pedidoRepository.findByClienteId(clienteId);
-    }
+    // @Transactional(readOnly = true)
+    // public List<Pedido> listarPorCliente(Long clienteId) {
+    //     return pedidoRepository.findByClienteId(clienteId);
+    // }
 
     @Transactional(readOnly = true)
     public List<Pedido> listarPorStatus(StatusPedido status) {
@@ -96,23 +97,31 @@ public class PedidoService {
 
     @Transactional
     public Pedido criar(Pedido pedido) {
-        // Valida e carrega o cliente
-        if (pedido.getCliente() == null || pedido.getCliente().getId() == null) {
-            throw new RuntimeException("Cliente é obrigatório");
-        }
+        // CLIENTE NÃO É MAIS OBRIGATÓRIO
+        // Valida e carrega o cliente (SE FORNECIDO)
+        // if (pedido.getCliente() == null || pedido.getCliente().getId() == null) {
+        //     throw new RuntimeException("Cliente é obrigatório");
+        // }
         
-        Cliente cliente = clienteRepository.findById(pedido.getCliente().getId())
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+        // Cliente cliente = clienteRepository.findById(pedido.getCliente().getId())
+        //         .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
         
-        pedido.setCliente(cliente);
+        // pedido.setCliente(cliente);
         pedido.setDataPedido(LocalDateTime.now());
         
-        // Salva o pedido primeiro
+        // Guarda os itens temporariamente e remove da entidade para evitar validação prematura
+        List<ItemPedido> itensTemp = new ArrayList<>();
+        if (pedido.getItens() != null && !pedido.getItens().isEmpty()) {
+            itensTemp.addAll(pedido.getItens());
+            pedido.getItens().clear();
+        }
+        
+        // Salva o pedido primeiro (sem itens)
         Pedido pedidoSalvo = pedidoRepository.save(pedido);
         
         // Processa os itens
-        if (pedido.getItens() != null && !pedido.getItens().isEmpty()) {
-            for (ItemPedido item : pedido.getItens()) {
+        if (!itensTemp.isEmpty()) {
+            for (ItemPedido item : itensTemp) {
                 item.setPedido(pedidoSalvo);
                 
                 // Carrega o produto
@@ -126,10 +135,13 @@ public class PedidoService {
                 produto.diminuirEstoque(item.getQuantidade());
                 produtoRepository.save(produto);
             }
-            itemPedidoRepository.saveAll(pedido.getItens());
+            itemPedidoRepository.saveAll(itensTemp);
+            
+            // Adiciona os itens salvos de volta ao pedido
+            pedidoSalvo.getItens().addAll(itensTemp);
         }
         
-        return pedidoRepository.findById(pedidoSalvo.getId()).orElseThrow();
+        return pedidoSalvo;
     }
 
     @Transactional
