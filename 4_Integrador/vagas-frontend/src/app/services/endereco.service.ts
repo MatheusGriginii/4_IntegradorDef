@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Endereco } from '../models/endereco';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EnderecoService {
-  private baseUrl = 'http://localhost:8080/api/enderecos';
+  private baseUrl = `${environment.apiUrl}/enderecos`;
 
   constructor(private http: HttpClient) { }
 

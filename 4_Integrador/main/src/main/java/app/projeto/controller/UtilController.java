@@ -13,11 +13,7 @@ public class UtilController {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    /**
-     * ENDPOINT TEMPORÁRIO - Gera hash BCrypt de uma senha
-     * Use apenas para desenvolvimento!
-     * DELETE ESTE ARQUIVO DEPOIS!
-     */
+
     @GetMapping("/gerar-hash/{senha}")
     public ResponseEntity<?> gerarHash(@PathVariable String senha) {
         String hash = passwordEncoder.encode(senha);
@@ -29,9 +25,7 @@ public class UtilController {
         ));
     }
 
-    /**
-     * ENDPOINT TEMPORÁRIO - Testa se uma senha bate com um hash
-     */
+
     @PostMapping("/testar-senha")
     public ResponseEntity<?> testarSenha(@RequestBody Map<String, String> dados) {
         String senhaPlana = dados.get("senha");
@@ -43,7 +37,7 @@ public class UtilController {
             "senha", senhaPlana,
             "hash", hash,
             "match", matches,
-            "resultado", matches ? "✅ SENHA CORRETA!" : "❌ Senha incorreta"
+            "resultado", matches ? "SENHA CORRETA" : "Senha incorreta"
         ));
     }
 }

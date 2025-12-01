@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Pedido, ItemPedido, StatusPedido, TipoPedido } from '../models/pedido';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PedidoService {
-  private baseUrl = 'http://localhost:8080/api/pedidos';
+  private baseUrl = `${environment.apiUrl}/pedidos`;
 
   constructor(private http: HttpClient) { }
 

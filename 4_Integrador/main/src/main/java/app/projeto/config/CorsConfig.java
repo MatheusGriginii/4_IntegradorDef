@@ -13,10 +13,14 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         
-        // Permitir requisições do frontend Angular
+        // Permitir requisições do frontend Angular (local e EC2)
         config.addAllowedOrigin("http://localhost:4200");
         config.addAllowedOrigin("http://localhost:4201");
         config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("http://52.14.225.74");
+        config.addAllowedOrigin("http://52.14.225.74:80");
+        config.addAllowedOrigin("http://52.14.225.74:8080");
+        config.addAllowedOrigin("https://52.14.225.74");
         
         // Permitir todos os métodos HTTP
         config.addAllowedMethod("GET");
@@ -25,8 +29,9 @@ public class CorsConfig {
         config.addAllowedMethod("DELETE");
         config.addAllowedMethod("OPTIONS");
         
-        // Permitir todos os headers
+        // Permitir todos os headers e expor Authorization
         config.addAllowedHeader("*");
+        config.addExposedHeader("Authorization");
         
         // Permitir envio de cookies/credenciais
         config.setAllowCredentials(true);
