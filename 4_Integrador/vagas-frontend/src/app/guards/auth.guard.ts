@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
           return true;
         } else {
           // Usuário não tem permissão - redireciona para dashboard
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/app/dashboard']);
           return false;
         }
       }

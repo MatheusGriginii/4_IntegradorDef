@@ -53,7 +53,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
       // Se erro 403 (Forbidden), redirecionar para dashboard
       if (error.status === 403) {
         console.log('⚠️ Erro 403 - redirecionando para dashboard');
-        router.navigate(['/dashboard']);
+        router.navigate(['/app/dashboard']);
       }
 
       return throwError(() => error);
