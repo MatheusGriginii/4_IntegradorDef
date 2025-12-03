@@ -6,7 +6,7 @@ public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
 }
 
-![foto1](asdasd.png)
+![foto1](image.png)
 ---
 
 O segredo do JWT deve estar em um arquivo .env: Verifica se chaves sensiveis (como o segredo do JWT) estao externalizadas em arquivos de configuracao e nao escritas diretamente no codigo ("hardcoded").
