@@ -1,5 +1,6 @@
 package app.projeto.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class Pedido {
     // private Cliente cliente;
     
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
     private List<ItemPedido> itens = new ArrayList<>();
     
     @Enumerated(EnumType.STRING)
