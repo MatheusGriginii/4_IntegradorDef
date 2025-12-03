@@ -187,7 +187,7 @@ export const routes: Routes = [
   }
 ];
 
-![video](<2025-08-19 12-53-12.gif>)
+![video](<2025-08-19 12-53-12-1.gif>)
 ---
 
 Utiliza um HttpInterceptor...: Avalia se um interceptor HTTP foi implementado para anexar o token Bearer automaticamente em todas as chamadas para a API.
