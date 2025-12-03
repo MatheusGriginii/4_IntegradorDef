@@ -116,8 +116,15 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     @Query("SELECT p FROM Pedido p WHERE p.dataEntregaPrevista < CURRENT_TIMESTAMP AND p.status NOT IN ('ENTREGUE', 'CANCELADO') ORDER BY p.dataEntregaPrevista ASC")
     List<Pedido> findPedidosAtrasados();
     
-    // Buscar todos os pedidos ordenados por data
-    List<Pedido> findAllByOrderByDataPedidoDesc();
+        // Buscar todos os pedidos ordenados por data
+        List<Pedido> findAllByOrderByDataPedidoDesc();
+
+        // Buscar todos os pedidos com itens e produto carregados (evita LazyInitializationException)
+        @Query("SELECT DISTINCT p FROM Pedido p \n" +
+            "LEFT JOIN FETCH p.itens i \n" +
+            "LEFT JOIN FETCH i.produto prod \n" +
+            "ORDER BY p.dataPedido DESC")
+        List<Pedido> findAllWithItensOrderByDataPedidoDesc();
     
     Page<Pedido> findAllByOrderByDataPedidoDesc(Pageable pageable);
     

@@ -37,7 +37,8 @@ public class PedidoService {
 
     @Transactional(readOnly = true)
     public List<Pedido> listarTodos() {
-        return pedidoRepository.findAllByOrderByDataPedidoDesc();
+        // Usa fetch join para evitar LazyInitializationException ao serializar
+        return pedidoRepository.findAllWithItensOrderByDataPedidoDesc();
     }
 
     // @Transactional(readOnly = true)
