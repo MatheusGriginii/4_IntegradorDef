@@ -1,173 +1,240 @@
-# 🍞 Adorela - Panificadora & Confeitaria
+As senhas no banco de dados devem estar criptografadas: Avalia se as senhas dos usuarios estao armazenadas no banco de dados usando um hash forte (BCrypt), e nao em texto plano:
 
-Sistema completo de gerenciamento para padaria e confeitaria, desenvolvido com Spring Boot e Angular 19.
+Arquivo: 4_Integrador/main/src/main/java/app/projeto/config/SecurityConfig.java
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
 
-## 🎨 Sobre o Projeto
+![foto1](asdasd.png)
+---
 
-**Adorela Panificadora & Confeitaria** é um sistema web completo que oferece:
+O segredo do JWT deve estar em um arquivo .env: Verifica se chaves sensiveis (como o segredo do JWT) estao externalizadas em arquivos de configuracao e nao escritas diretamente no codigo ("hardcoded").
 
-- **Área Pública**: Landing page moderna com informações da padaria, produtos em destaque e canais de atendimento
-- **Área Administrativa**: Dashboard completo para gestão de produtos, clientes, pedidos e estoque
+Arquivo: 4_Integrador/main/src/main/java/app/projeto/config/JwtUtil.java
+public JwtUtil() {
+    Dotenv dotenv = Dotenv.configure()
+            .directory(".")
+            .ignoreIfMissing()
+            .load();
+    
+    this.jwtSecret = dotenv.get("JWT_SECRET", "adorela-panificadora-secret-key-super-segura-2024-mudar-em-producao");
+    this.jwtExpiration = Long.parseLong(dotenv.get("JWT_EXPIRATION", "86400000"));
+    this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+}
 
-### Características Principais
+![foto2](image-1.png)
+---
 
-- 🏠 **Home Page Elegante**: Design vermelho e branco com fonte Bodoni para a marca
-- 👨‍💼 **Sistema Administrativo**: Gestão completa de produtos, clientes e pedidos
-- 📱 **Responsivo**: Interface adaptada para desktop, tablet e mobile
-- 🎯 **Intuitivo**: Navegação simples e direta para clientes e administradores
+O endpoint de login funciona...: Confirma se a API possui um endpoint de autenticacao que recebe credenciais, valida-as corretamente e retorna um token JWT valido em caso de sucesso.
 
-## 🛠️ Tecnologias Utilizadas
+Arquivo: 4_Integrador/main/src/main/java/app/projeto/controller/AuthController.java
+@PostMapping("/login")
+public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+    try {
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                loginRequest.getEmail(),
+                loginRequest.getSenha()
+            )
+        );
+        
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtil.gerarToken(loginRequest.getEmail());
+        Usuario usuario = customUserDetailsService.carregarUsuarioPorEmail(loginRequest.getEmail());
+        
+        LoginResponse response = new LoginResponse(
+            jwt,
+            usuario.getId(),
+            usuario.getNome(),
+            usuario.getEmail(),
+            usuario.getPerfil()
+        );
 
-### Backend
-- **Java 17**
-- **Spring Boot 3.x**
-- **Spring Data JPA**
-- **MySQL**
-- **Maven**
+        return ResponseEntity.ok(response);
+    } catch (AuthenticationException e) {
+        return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(Map.of("erro", "Email ou senha invalidos"));
+    }
+}
+![foto3](image-2.png)
+![foto4](image-3.png)
+---
 
-### Frontend
-- **Angular 19** (Standalone Components)
-- **TypeScript**
-- **SCSS**
-- **Bootstrap 5**
-- **Font Awesome**
-- **Google Fonts** (Bodoni Moda, Poppins)
+O Spring Security esta configurado para bloquear...: Analisa se os filtros do Spring Security estao corretamente configurados para interceptar requisicoes, validar o token JWT e bloquear o acesso a rotas protegidas.
 
-## 🚀 Como Executar
+Arquivo: 4_Integrador/main/src/main/java/app/projeto/config/SecurityConfig.java
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(authz -> authz
+            .requestMatchers("/api/auth/**").permitAll()
+            .requestMatchers("/api/**").authenticated()
+        )
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+    return http.build();
+}
 
-### Pré-requisitos
-- Java 17 ou superior
-- Node.js 18+ e npm
-- MySQL
-- Maven
+Arquivo: 4_Integrador/main/src/main/java/app/projeto/security/JwtAuthenticationFilter.java
+@Override
+protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    try {
+        String jwt = getJwtFromRequest(request);
+        if (StringUtils.hasText(jwt) && jwtUtil.validarToken(jwt)) {
+            String email = jwtUtil.getEmailDoToken(jwt);
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+            UsernamePasswordAuthenticationToken authentication = 
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+    } catch (Exception e) {
+        logger.error("Nao foi possivel definir a autenticacao do usuario", e);
+    }
+    filterChain.doFilter(request, response);
+}
+![alt text](image-4.png)
+---
 
-### Backend (Spring Boot)
+Rotas que exigem perfis especificos...: Verifica a implementacao da autorizacao baseada em papeis (Roles), garantindo que um usuario (ex: ROLE_FUNCIONARIO) nao possa acessar rotas de ROLE_ADMIN.
 
-1. **Clone o repositório**
-```bash
-git clone https://github.com/MatheusGriginii/4_IntegradorDef.git
-cd 4_IntegradorDef
-```
+Arquivo: 4_Integrador/main/src/main/java/app/projeto/config/SecurityConfig.java
+.authorizeHttpRequests(authz -> authz
+    .requestMatchers(HttpMethod.POST, "/api/usuarios").hasRole("ADMIN")
+    .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasRole("ADMIN")
+    .requestMatchers(HttpMethod.PUT, "/api/usuarios/**").hasAnyRole("ADMIN", "GERENTE")
+    .requestMatchers(HttpMethod.POST, "/api/produtos").hasAnyRole("ADMIN", "GERENTE")
+    .requestMatchers(HttpMethod.PUT, "/api/produtos/**").hasAnyRole("ADMIN", "GERENTE")
+    .requestMatchers(HttpMethod.DELETE, "/api/produtos/**").hasAnyRole("ADMIN", "GERENTE")
+    .requestMatchers(HttpMethod.POST, "/api/categorias").hasAnyRole("ADMIN", "GERENTE")
+    .requestMatchers(HttpMethod.PUT, "/api/categorias/**").hasAnyRole("ADMIN", "GERENTE")
+    .requestMatchers(HttpMethod.DELETE, "/api/categorias/**").hasAnyRole("ADMIN", "GERENTE")
+    .requestMatchers("/api/**").authenticated()
+)
 
-2. **Configure o banco de dados**
-   - Edite `main/src/main/resources/application.properties`
-   - Configure as credenciais do MySQL
 
-3. **Execute a aplicação**
-```bash
-cd main
-mvn spring-boot:run
-```
 
-O backend estará rodando em `http://localhost:8080`
+![alt text](image-5.png)
 
-### Frontend (Angular)
+---
 
-1. **Navegue até a pasta do frontend**
-```bash
-cd vagas-frontend
-```
+O Angular utiliza CanActivate...: Confirma se o front-end possui guardas de rota (CanActivate) que impedem o acesso a paginas protegidas colando a URL diretamente no navegador.
 
-2. **Instale as dependências**
-```bash
-npm install
-```
+Arquivo: 4_Integrador/vagas-frontend/src/app/guards/auth.guard.ts
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuard implements CanActivate {
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
-3. **Execute o servidor de desenvolvimento**
-```bash
-npm start
-```
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    if (this.authService.isAutenticado()) {
+      const perfisRequeridos = route.data['perfis'] as string[];
+      if (perfisRequeridos && perfisRequeridos.length > 0) {
+        if (this.authService.temAlgumPerfil(perfisRequeridos)) {
+          return true;
+        } else {
+          this.router.navigate(['/dashboard']);
+          return false;
+        }
+      }
+      return true;
+    }
+    this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+    return false;
+  }
+}
 
-O frontend estará disponível em `http://localhost:4200`
+Arquivo: 4_Integrador/vagas-frontend/src/app/app.routes.ts
+export const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'app',
+    component: LayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: 'dashboard', component: DashboardComponent },
+      { 
+        path: 'usuarios/novo', 
+        component: UsuarioFormComponent,
+        canActivate: [AuthGuard],
+        data: { perfis: ['ADMIN'] }
+      },
+      { 
+        path: 'usuarios/editar/:id', 
+        component: UsuarioFormComponent,
+        canActivate: [AuthGuard],
+        data: { perfis: ['ADMIN', 'GERENTE'] }
+      },
+      { 
+        path: 'produtos/novo', 
+        component: ProdutoFormComponent,
+        canActivate: [AuthGuard],
+        data: { perfis: ['ADMIN', 'GERENTE'] }
+      },
+      { 
+        path: 'pedidos', 
+        component: PedidoListComponent
+      },
+    ]
+  }
+];
 
-## 📁 Estrutura do Projeto
+![video](<2025-08-19 12-53-12.gif>)
+---
 
-```
-4_Integrador/
-├── main/                          # Backend Spring Boot
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/app/projeto/
-│   │   │   │   ├── config/       # Configurações
-│   │   │   │   ├── controller/   # Controllers REST
-│   │   │   │   ├── entity/       # Entidades JPA
-│   │   │   │   ├── repository/   # Repositórios
-│   │   │   │   └── service/      # Serviços
-│   │   │   └── resources/        # Propriedades
-│   └── pom.xml
-│
-└── vagas-frontend/                # Frontend Angular
-    ├── src/
-    │   ├── app/
-    │   │   ├── components/
-    │   │   │   ├── home/         # Landing Page
-    │   │   │   ├── login/        # Autenticação
-    │   │   │   ├── candidato/    # Gestão de Clientes
-    │   │   │   ├── empresa/      # Gestão da Empresa
-    │   │   │   ├── usuario/      # Gestão de Usuários
-    │   │   │   └── vaga/         # Gestão de Produtos
-    │   │   ├── models/           # Modelos TypeScript
-    │   │   └── services/         # Serviços HTTP
-    │   └── styles.scss
-    └── package.json
-```
+Utiliza um HttpInterceptor...: Avalia se um interceptor HTTP foi implementado para anexar o token Bearer automaticamente em todas as chamadas para a API.
 
-## 🎨 Design System
+Arquivo: 4_Integrador/vagas-frontend/src/app/interceptors/auth.interceptor.ts
+export const authInterceptor: HttpInterceptorFn = (request, next) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  const platformId = inject(PLATFORM_ID);
+  const isBrowser = isPlatformBrowser(platformId);
 
-### Cores
-- **Vermelho Principal**: `#C8102E` (vermelho intenso)
-- **Vermelho Escuro**: `#8B0000` (dark red)
-- **Vermelho Vibrante**: `#E31837`
-- **Branco**: `#FFFFFF`
+  if (!isBrowser) {
+    return next(request);
+  }
 
-### Tipografia
-- **Marca (ADORELA)**: Bodoni Moda 900 - Maiúsculas
-- **Subtítulo**: Arial/Helvetica - Sans Serif
-- **Corpo**: Poppins
+  const token = authService.getToken();
 
-## 📱 Áreas do Sistema
+  if (token) {
+    request = request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
 
-### Área Pública (/)
-- Landing page com informações da padaria
-- Produtos em destaque
-- Depoimentos de clientes
-- Informações de contato (telefone e WhatsApp)
-- Acesso discreto à área administrativa
+  return next(request).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        authService.logout();
+      }
+      if (error.status === 403) {
+        router.navigate(['/dashboard']);
+      }
+      return throwError(() => error);
+    })
+  );
+};
 
-### Área Administrativa (/app)
-Após login, acesso a:
-- Dashboard
-- Gestão de Produtos
-- Gestão de Clientes
-- Gestão de Pedidos
-- Gestão de Usuários
-- Configurações
+Arquivo: 4_Integrador/vagas-frontend/src/app/app.config.ts
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideHttpClient(
+      withInterceptors([authInterceptor]),
+      withFetch()
+    ),
+    ...
+  ]
+};
 
-## 🔐 Acesso Administrativo
-
-Para acessar a área administrativa:
-1. Na home page, clique em "Acesso administrativo?" no rodapé
-2. Faça login com suas credenciais
-3. Acesse o dashboard completo
-
-## 📄 Documentação Adicional
-
-- [Estrutura do Sistema](ESTRUTURA_SISTEMA.md)
-- [Documentação da Home Page](HOME_PAGE_ADORELA.md)
-- [Exemplos de Código](EXEMPLOS_CODIGO.md)
-- [Solução de CORS](CORS_SOLUTION.md)
-
-## 📝 Licença
-
-Este projeto é de uso educacional.
-
-## 👨‍💻 Autor
-
-**João**
-- GitHub: [@jo-4o](https://github.com/jo-4o)
-
-## 👥 Participantes
-
-- **Matheus Grigini** - [@MatheusGriginii](https://github.com/MatheusGriginii)
-- **Victor Silva** - [@victorsilv19](https://github.com/victorsilv19)
-
+![alt text]({B92AA411-1E6E-4A84-8F5B-71F5C7058514}.png)
