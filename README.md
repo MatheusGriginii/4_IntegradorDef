@@ -12,6 +12,7 @@ public PasswordEncoder passwordEncoder() {
 O segredo do JWT deve estar em um arquivo .env: Verifica se chaves sensiveis (como o segredo do JWT) estao externalizadas em arquivos de configuracao e nao escritas diretamente no codigo ("hardcoded").
 
 Arquivo: 4_Integrador/main/src/main/java/app/projeto/config/JwtUtil.java
+```
 public JwtUtil() {
     Dotenv dotenv = Dotenv.configure()
             .directory(".")
@@ -22,13 +23,14 @@ public JwtUtil() {
     this.jwtExpiration = Long.parseLong(dotenv.get("JWT_EXPIRATION", "86400000"));
     this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 }
-
+```
 ![foto2](image-1.png)
 ---
 
 O endpoint de login funciona...: Confirma se a API possui um endpoint de autenticacao que recebe credenciais, valida-as corretamente e retorna um token JWT valido em caso de sucesso.
 
 Arquivo: 4_Integrador/main/src/main/java/app/projeto/controller/AuthController.java
+```
 @PostMapping("/login")
 public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
     try {
@@ -58,6 +60,7 @@ public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
             .body(Map.of("erro", "Email ou senha invalidos"));
     }
 }
+```
 ![foto3](image-2.png)
 ![foto4](image-3.png)
 ---
@@ -65,6 +68,7 @@ public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
 O Spring Security esta configurado para bloquear...: Analisa se os filtros do Spring Security estao corretamente configurados para interceptar requisicoes, validar o token JWT e bloquear o acesso a rotas protegidas.
 
 Arquivo: 4_Integrador/main/src/main/java/app/projeto/config/SecurityConfig.java
+```
 @Bean
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
@@ -77,8 +81,9 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
 }
-
+```
 Arquivo: 4_Integrador/main/src/main/java/app/projeto/security/JwtAuthenticationFilter.java
+```
 @Override
 protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
     try {
@@ -96,12 +101,14 @@ protected void doFilterInternal(HttpServletRequest request, HttpServletResponse 
     }
     filterChain.doFilter(request, response);
 }
+```
 ![alt text](image-4.png)
 ---
 
 Rotas que exigem perfis especificos...: Verifica a implementacao da autorizacao baseada em papeis (Roles), garantindo que um usuario (ex: ROLE_FUNCIONARIO) nao possa acessar rotas de ROLE_ADMIN.
 
 Arquivo: 4_Integrador/main/src/main/java/app/projeto/config/SecurityConfig.java
+```
 .authorizeHttpRequests(authz -> authz
     .requestMatchers(HttpMethod.POST, "/api/usuarios").hasRole("ADMIN")
     .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasRole("ADMIN")
@@ -115,7 +122,7 @@ Arquivo: 4_Integrador/main/src/main/java/app/projeto/config/SecurityConfig.java
     .requestMatchers("/api/**").authenticated()
 )
 
-
+```
 
 ![alt text](image-5.png)
 
@@ -124,6 +131,7 @@ Arquivo: 4_Integrador/main/src/main/java/app/projeto/config/SecurityConfig.java
 O Angular utiliza CanActivate...: Confirma se o front-end possui guardas de rota (CanActivate) que impedem o acesso a paginas protegidas colando a URL diretamente no navegador.
 
 Arquivo: 4_Integrador/vagas-frontend/src/app/guards/auth.guard.ts
+```
 @Injectable({
   providedIn: 'root'
 })
@@ -150,8 +158,9 @@ export class AuthGuard implements CanActivate {
     return false;
   }
 }
-
+```
 Arquivo: 4_Integrador/vagas-frontend/src/app/app.routes.ts
+```
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
@@ -186,13 +195,14 @@ export const routes: Routes = [
     ]
   }
 ];
-
+```
 ![video](<2025-08-19 12-53-12-1.gif>)
 ---
 
 Utiliza um HttpInterceptor...: Avalia se um interceptor HTTP foi implementado para anexar o token Bearer automaticamente em todas as chamadas para a API.
 
 Arquivo: 4_Integrador/vagas-frontend/src/app/interceptors/auth.interceptor.ts
+```
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -225,8 +235,9 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
     })
   );
 };
-
+```
 Arquivo: 4_Integrador/vagas-frontend/src/app/app.config.ts
+```
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(
@@ -236,5 +247,5 @@ export const appConfig: ApplicationConfig = {
     ...
   ]
 };
-
+```
 ![alt text]({B92AA411-1E6E-4A84-8F5B-71F5C7058514}.png)
