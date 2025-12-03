@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
   styleUrl: './produto-form.component.scss'
 })
 export class ProdutoFormComponent implements OnInit {
-  produto: Produto = { nome: '' };
+  produto: Produto = { nome: '', ativo: true };
   categorias: Categoria[] = [];
   isEdicao: boolean = false;
   loading: boolean = false;

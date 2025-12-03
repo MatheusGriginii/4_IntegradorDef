@@ -84,8 +84,8 @@
                 <input 
                   type="text" 
                   class="form-control" 
-                  [(ngModel)]="produto.imagemUrl"
-                  name="imagemUrl"
+                  [(ngModel)]="produto.imagem"
+                  name="imagem"
                   placeholder="https://exemplo.com/imagem.jpg">
               </div>
               
@@ -94,11 +94,11 @@
                   <input 
                     class="form-check-input" 
                     type="checkbox"
-                    [(ngModel)]="produto.disponivel"
-                    name="disponivel"
-                    id="disponivel">
-                  <label class="form-check-label" for="disponivel">
-                    Produto Disponível
+                    [(ngModel)]="produto.ativo"
+                    name="ativo"
+                    id="ativo">
+                  <label class="form-check-label" for="ativo">
+                    Produto Ativo (Disponível)
                   </label>
                 </div>
               </div>

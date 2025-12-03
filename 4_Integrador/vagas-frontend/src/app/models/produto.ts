@@ -3,8 +3,11 @@ export interface Produto {
   nome: string;
   descricao?: string;
   preco?: number;
-  categoria?: any;
+  categoria?: { id: number } | any;
   estoque?: number;
-  imagemUrl?: string;
-  disponivel?: boolean;
+  estoqueMinimo?: number;
+  imagem?: string;
+  ativo?: boolean;
+  tempoPreparoMinutos?: number;
+  ingredientes?: string;
 }
