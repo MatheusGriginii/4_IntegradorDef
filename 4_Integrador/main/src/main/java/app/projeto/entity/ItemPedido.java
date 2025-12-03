@@ -16,6 +16,7 @@ public class ItemPedido {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pedido_id", nullable = false)
     @NotNull(message = "Pedido é obrigatório")
+    @JsonBackReference("pedido-itens")
     private Pedido pedido;
     
     @ManyToOne(fetch = FetchType.LAZY)

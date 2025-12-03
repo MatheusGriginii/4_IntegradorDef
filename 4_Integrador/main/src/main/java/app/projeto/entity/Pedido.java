@@ -21,7 +21,7 @@ public class Pedido {
     // private Cliente cliente;
     
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("pedido-itens")
     private List<ItemPedido> itens = new ArrayList<>();
     
     @Enumerated(EnumType.STRING)
