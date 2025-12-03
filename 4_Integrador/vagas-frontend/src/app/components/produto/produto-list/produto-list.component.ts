@@ -137,7 +137,7 @@ export class ProdutoListComponent implements OnInit {
 
   // Métodos auxiliares para o template
   contarDisponiveis(): number {
-    return this.produtosFiltrados.filter(p => p.disponivel === true).length;
+    return this.produtosFiltrados.filter(p => p.ativo === true).length;
   }
 
   contarEstoqueBaixo(): number {

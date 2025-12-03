@@ -87,7 +87,7 @@
             <tr *ngFor="let produto of produtosFiltrados">
               <td>
                 <img 
-                  [src]="produto.imagemUrl || 'assets/produto-placeholder.png'" 
+                  [src]="produto.imagem || 'assets/produto-placeholder.png'" 
                   [alt]="produto.nome" 
                   style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 2px solid #F0E6D9;">
               </td>
@@ -115,10 +115,10 @@
                 </span>
               </td>
               <td>
-                <span *ngIf="produto.disponivel" class="badge badge-success">
+                <span *ngIf="produto.ativo" class="badge badge-success">
                   <i class="fas fa-check me-1"></i>Disponível
                 </span>
-                <span *ngIf="!produto.disponivel" class="badge badge-danger">
+                <span *ngIf="!produto.ativo" class="badge badge-danger">
                   <i class="fas fa-times me-1"></i>Indisponível
                 </span>
               </td>
